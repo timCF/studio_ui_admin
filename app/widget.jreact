@@ -1,0 +1,30 @@
+- var utils = locals.utils
+- var state = locals.state
+mixin swapbutton(name, path, style)
+	if state.data && state.data.enabled
+		button.btn.btn-success(class=style onClick=utils.view_swap(state, path))= name
+	else
+		button.btn.btn-default(class=style onClick=utils.view_swap(state, path))= name
+mixin selectitems(list, path, style)
+	select.form-control(class=style onChange=utils.view_set(state, path))
+		each el in list
+			option= el
+mixin fileinput(path)
+	div.btn.btn-default.btn-lg.btn-file.fill Browse or drag and drop files
+		input(type="file" multiple="true" onChange=utils.view_files(state, path))
+//
+//	CONTENT
+//
+nav.navbar.navbar-default.navbar-fixed-top.transparent.text-center
+	div.btn-group
+		button.btn.btn-default.navbar-btn(onClick=utils.info("hello nextgenjs")) info
+		button.btn.btn-info.navbar-btn(onClick=utils.notice("hello nextgenjs")) notice
+		button.btn.btn-warning.navbar-btn(onClick=utils.warn("hello nextgenjs")) warn
+		button.btn.btn-danger.navbar-btn(onClick=utils.error("hello nextgenjs")) error
+div.container-fluid
+	div.row.text-center
+		div.col-xs-12.form-inline(id="datepair")
+			input.form-control.date.start(type="text" placeholder="дата начала")
+			input.form-control.time.start(type="text" placeholder="время начала")
+			input.form-control.time.end(type="text" placeholder="время окончания")
+			input.form-control.date.end(type="text" placeholder="дата окончания")

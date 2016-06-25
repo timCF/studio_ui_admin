@@ -20,7 +20,11 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	state = {
 		opts: {},
 		data: {},
-		datepair: false
+		datepair: false,
+		datepairval: {
+			date: {start: '', end: ''},
+			time: {start: '', end: ''}
+		}
 	}
 	# some compile-time defined utils, frozen
 	utils = Object.freeze(require("utils"))
@@ -35,8 +39,17 @@ document.addEventListener "DOMContentLoaded", (e) ->
 					$('#datepair .time').timepicker(timepicker_opts)
 					$('#datepair .date').datepicker(datepicker_opts)
 					state.datepair = new Datepair(datepair, {defaultTimeDelta: 10800000})
+					$('#datepair').on('rangeSelected', () ->
+						state.datepairval.date.start = $('#datepair .date.start').datepicker('getDate')
+						state.datepairval.date.end = $('#datepair .date.end').datepicker('getDate')
+						state.datepairval.time.start = $('#datepair .time.start').timepicker('getTime')
+						state.datepairval.time.end = $('#datepair .time.end').timepicker('getTime')
+						#
+						#	TODO : set value of view render !!!
+						#
+						console.log state.datepairval
+					)
 					console.log("init datetime picker")
-		console.log(state.datepair)
 		react.render(widget(fullstate), document.getElementById("main_frame"))
 	setInterval(render, 500)
 	require("main")(state, utils)

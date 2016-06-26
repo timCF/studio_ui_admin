@@ -33,23 +33,23 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	react = require("react-dom")
 	widget = require("widget")
 	render = () ->
-		if not(state.datepair)
-			datepair = document.getElementById('datepair')
-			if datepair
-					$('#datepair .time').timepicker(timepicker_opts)
-					$('#datepair .date').datepicker(datepicker_opts)
-					state.datepair = new Datepair(datepair, {defaultTimeDelta: 10800000})
-					$('#datepair').on('rangeSelected', () ->
-						state.datepairval.date.start = $('#datepair .date.start').datepicker('getDate')
-						state.datepairval.date.end = $('#datepair .date.end').datepicker('getDate')
-						state.datepairval.time.start = $('#datepair .time.start').timepicker('getTime')
-						state.datepairval.time.end = $('#datepair .time.end').timepicker('getTime')
-						#
-						#	TODO : set value of view render !!!
-						#
-						console.log state.datepairval
-					)
-					console.log("init datetime picker")
+		datepair = document.getElementById('datepair')
+		if not(datepair) then (state.datepair = false)
+		if not(state.datepair) and datepair
+			$('#datepair .time').timepicker(timepicker_opts)
+			$('#datepair .date').datepicker(datepicker_opts)
+			state.datepair = new Datepair(datepair, {defaultTimeDelta: 10800000})
+			$('#datepair').on('rangeSelected', () ->
+				state.datepairval.date.start = $('#datepair .date.start').datepicker('getDate')
+				state.datepairval.date.end = $('#datepair .date.end').datepicker('getDate')
+				state.datepairval.time.start = $('#datepair .time.start').timepicker('getTime')
+				state.datepairval.time.end = $('#datepair .time.end').timepicker('getTime')
+				#
+				#	TODO : set value of view render !!!
+				#
+				console.log state.datepairval
+			)
+			console.log("init datetime picker")
 		react.render(widget(fullstate), document.getElementById("main_frame"))
 	setInterval(render, 500)
 	require("main")(state, utils)

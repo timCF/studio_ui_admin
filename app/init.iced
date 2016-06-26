@@ -27,7 +27,8 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		}
 	}
 	# some compile-time defined utils, frozen
-	utils = Object.freeze(require("utils"))
+	utils = Object.freeze(tmp = require("utils") ; tmp.proto = require("protobufjs").loadProtoFile("./studio_proto/studio.proto").build("lemooor.studio") ; tmp)
+	console.log(utils.proto)
 	# full state structure, frozen
 	fullstate = Object.freeze({state: state, utils: utils})
 	react = require("react-dom")

@@ -24,6 +24,7 @@
     "imuta": "^1.0.0",
     "jt.timepicker": "^1.11.1",
     "datepair.js": "^0.4.14",
-    "bootstrap-datepicker": "^1.6.1"
+    "bootstrap-datepicker": "^1.6.1",
+    "fullcalendar": "^2.8.0"
   }
 }

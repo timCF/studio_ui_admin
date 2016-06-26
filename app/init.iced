@@ -78,10 +78,10 @@ document.addEventListener "DOMContentLoaded", (e) ->
 				state.datepairval.time.end = $('#datepair .time.end').timepicker('getTime'))
 			console.log("render datepair")
 	render_calendar = () ->
-		calendar = $('#calendar')
-		if (calendar.length == 0) then (state.calendar = false)
-		if not(state.calendar) and (calendar.length > 0)
-			state.calendar = $('#calendar').fullCalendar(calendar_opts)
+		calendar = document.getElementById('calendar')
+		if not(calendar) then (state.calendar = false)
+		if not(state.calendar) and calendar
+			state.calendar = $(calendar).fullCalendar(calendar_opts)
 			console.log("render calendar")
 	render = () ->
 		render_datepair()

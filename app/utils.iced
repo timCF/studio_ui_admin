@@ -17,7 +17,7 @@ module.exports =
 	decode_proto: (data) ->
 		utils = @
 		try
-			utils.proto.ResponseState.decode64(data)
+			utils.proto.Response.decode64(data)
 		catch error
 			"protobuf decode error "+error+" raw data : "+data
 	xmlhttpreq: (data) ->

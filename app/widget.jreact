@@ -24,6 +24,13 @@ nav.navbar.navbar-default.navbar-fixed-top.transparent.text-center
 div.container-fluid
 	div.row.text-center
 		div.col-xs-12
+			div.btn-group
+				button.btn.btn-default(onClick=utils.info("hello nextgenjs")) info
+				button.btn.btn-info(onClick=utils.notice("hello nextgenjs")) notice
+				button.btn.btn-warning(onClick=utils.warn("hello nextgenjs")) warn
+				button.btn.btn-danger(onClick=utils.error("hello nextgenjs")) error
+	div.row.text-center
+		div.col-xs-12
 			div(id="calendar")
 //
 //	calendar day popup

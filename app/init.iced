@@ -17,6 +17,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		weekStart: 1,
 	}
 	calendar_opts = {
+		lang: 'ru',
 		firstDay: 1,
 		dayClick: ((date, _, __) -> state.workday = date ; $('#datepair .date.start').datepicker('setDate', date.toDate()) ; $('#calendarday').modal()),
 		eventAfterRender: ((data, element, _) -> $(element).css('width', ($(element).width() * data.percentfill) + 'px')),
@@ -39,6 +40,36 @@ document.addEventListener "DOMContentLoaded", (e) ->
 				percentfill: 0.2
 			},
 			{
+				title: 'event5',
+				start: '2016-06-05',
+				end: '2016-06-07',
+				percentfill: 0.2
+			},
+			{
+				title: 'event5',
+				start: '2016-06-05',
+				end: '2016-06-07',
+				percentfill: 0.2
+			},
+			{
+				title: 'event5',
+				start: '2016-06-05',
+				end: '2016-06-07',
+				percentfill: 0.2
+			},
+			{
+				title: 'event5',
+				start: '2016-06-05',
+				end: '2016-06-07',
+				percentfill: 0.2
+			},
+			{
+				title: 'event5',
+				start: '2016-06-05',
+				end: '2016-06-07',
+				percentfill: 0.2
+			},
+			{
 				title: 'event3',
 				start: '2016-06-09T12:30:00',
 				allDay: false
@@ -50,6 +81,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	state = {
 		opts: {},
 		data: {},
+		response_state: false,
 		workday: moment(),
 		datepair: false,
 		calendar: false,

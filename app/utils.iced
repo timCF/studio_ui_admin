@@ -20,10 +20,29 @@ module.exports =
 			utils.proto.Response.decode64(data)
 		catch error
 			"protobuf decode error "+error+" raw data : "+data
-	xmlhttpreq: (data) ->
+	xmlhttpreq: (data, cmd, state) ->
 		utils = @
 		xhr = new XMLHttpRequest()
 		xhr.responseType = "arraybuffer"
 		xhr.open('POST', 'http://127.0.0.1:9866', true)
-		xhr.onreadystatechange = () -> if (xhr.readyState == 4) then console.log(utils.decode_proto(proto2base64.encode(xhr.response)))
-		xhr.send([''])
+		xhr.onreadystatechange = () ->
+			if (xhr.readyState == 4)
+				response = utils.decode_proto(proto2base64.encode(xhr.response))
+				if Imuta.is_string(response)
+					utils.error(response)
+				else
+					#
+					#	TODO !!!
+					#
+					#switch cmd
+					#	when 'CMD_get_state'
+					#		state.response_state =
+		xhr.send(data)
+	CMD_get_state: (state) ->
+		utils = @
+		req = new utils.proto.Request
+		req.cmd = 'CMD_get_state'
+		req.client_kind = 'CK_admin'
+		req.login = ''
+		req.password = ''
+		utils.xmlhttpreq( utils.proto.Request.encode(req).toArrayBuffer(), req.cmd, state )

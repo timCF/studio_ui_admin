@@ -17,7 +17,7 @@ mixin fileinput(path)
 //
 nav.navbar.navbar-default.navbar-fixed-top.transparent.text-center
 	div.btn-group
-		button.btn.btn-default.navbar-btn(onClick=utils.xmlhttpreq('')) xmlhttpreq
+		button.btn.btn-default.navbar-btn(onClick=utils.CMD_get_state(state)) CMD_get_state
 		button.btn.btn-info.navbar-btn(onClick=utils.notice("hello nextgenjs")) notice
 		button.btn.btn-warning.navbar-btn(onClick=utils.warn("hello nextgenjs")) warn
 		button.btn.btn-danger.navbar-btn(onClick=utils.error("hello nextgenjs")) error

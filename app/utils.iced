@@ -1,4 +1,5 @@
 proto2base64 = require('base64-arraybuffer')
+lodash = require('lodash')
 module.exports =
 	error: (mess) -> $.growl.error({ message: mess , duration: 20000})
 	warn: (mess) -> $.growl.warning({ message: mess , duration: 20000})
@@ -28,6 +29,8 @@ module.exports =
 		xhr.onreadystatechange = () ->
 			if (xhr.readyState == 4)
 				response = utils.decode_proto(proto2base64.encode(xhr.response))
+				console.log(response)
+				console.log(utils.stringifyEnumsRecursive(response))
 				if Imuta.is_string(response)
 					utils.error(response)
 				else
@@ -46,3 +49,21 @@ module.exports =
 		req.login = ''
 		req.password = ''
 		utils.xmlhttpreq( utils.proto.Request.encode(req).toArrayBuffer(), req.cmd, state )
+	stringifyEnums: (message) ->
+		if message.$type
+			lodash.forEach(message.$type.children, (child) ->
+				type = lodash.get(child, 'element.resolvedType', null)
+				if (type and (type.className == 'Enum') and type.children)
+					metaValue = lodash.find(type.children, { id: message[child.name] })
+					if (metaValue and metaValue.name)
+						message[child.name] = metaValue.name)
+		message
+	stringifyEnumsRecursive: (message) ->
+		utils = @
+		message = utils.stringifyEnums(message)
+		lodash.forEach(message, (subMessage, key) ->
+			if (lodash.isObject(subMessage) and subMessage.$type)
+				message[key] = utils.stringifyEnumsRecursive(message[key])
+			else if Imuta.is_list(subMessage)
+				message[key] = subMessage.map((el) -> utils.stringifyEnumsRecursive(el)))
+		message

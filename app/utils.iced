@@ -17,7 +17,7 @@ module.exports =
 	decode_proto: (data) ->
 		utils = @
 		try
-			utils.proto.Response.decode64(data)
+			utils.stringifyEnums( utils.proto.Response.decode64(data) )
 		catch error
 			"protobuf decode error "+error+" raw data : "+data
 	xmlhttpreq: (data, cmd, state) ->
@@ -27,18 +27,14 @@ module.exports =
 		xhr.open('POST', 'http://127.0.0.1:9866', true)
 		xhr.onreadystatechange = () ->
 			if (xhr.readyState == 4)
-				response = utils.decode_proto(proto2base64.encode(xhr.response))
-				console.log(response)
-				console.log(utils.stringifyEnums(response))
+				response = utils.decode_proto( proto2base64.encode(xhr.response) )
 				if Imuta.is_string(response)
 					utils.error(response)
 				else
-					#
-					#	TODO !!!
-					#
-					#switch cmd
-					#	when 'CMD_get_state'
-					#		state.response_state =
+					switch response.status
+						when 'RS_error' then utils.error(response.message)
+						when 'RS_ok_state' then state.response_state = response.state
+				console.log(state.response_state)
 		xhr.send(data)
 	CMD_get_state: (state) ->
 		utils = @
@@ -52,17 +48,18 @@ module.exports =
 		utils = @
 		if (message and message.$type and message.$type.children)
 			message.$type.children.forEach((child) ->
-				if (message[child.name] and child.element.resolvedType)
+				field = child.name
+				if (message[field] and child.element.resolvedType)
 					switch child.element.resolvedType.className
 						when 'Enum'
 							dict = child.element.resolvedType.children.reduce(((acc, {id: id, name: name}) -> acc[id] = name ; acc), {})
 							if child.repeated
-								message[child.name] = message[child.name].map((el) -> dict[el])
+								message[field] = message[field].map((el) -> if dict[el] then dict[el] else el)
 							else
-								message[child.name] = dict[message[child.name]]
+								if dict[message[field]] then message[field] = dict[message[field]]
 						when 'Message'
 							if child.repeated
-								message[child.name] = message[child.name].map((el) -> utils.stringifyEnums(el))
+								message[field] = message[field].map((el) -> utils.stringifyEnums(el))
 							else
-								message[child.name] = utils.stringifyEnums(message[child.name]))
+								message[field] = utils.stringifyEnums(message[field]))
 		message

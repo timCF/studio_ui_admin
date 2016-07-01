@@ -12,50 +12,60 @@ mixin selectitems(list, path, style)
 mixin fileinput(path)
 	div.btn.btn-default.btn-lg.btn-file.fill Browse or drag and drop files
 		input(type="file" multiple="true" onChange=utils.view_files(state, path))
+mixin auth
+	div.center_abs.text-center
+		div.form-inline
+			input.form-control(type="text" placeholder="логин" onChange=utils.view_set(state, ["request_template","login"]))
+			input.form-control(type="text" placeholder="пароль" onChange=utils.view_set(state, ["request_template","password"]))
+			button.btn.btn-primary(onClick=utils.CMD_get_state(state)) CMD_get_state
+mixin main
+	nav.navbar.navbar-default.navbar-fixed-top.transparent.text-center
+		div.btn-group
+			button.btn.btn-default.navbar-btn(onClick=utils.CMD_get_state(state)) CMD_get_state
+			button.btn.btn-info.navbar-btn(onClick=utils.notice("hello nextgenjs")) notice
+			button.btn.btn-warning.navbar-btn(onClick=utils.warn("hello nextgenjs")) warn
+			button.btn.btn-danger.navbar-btn(onClick=utils.error("hello nextgenjs")) error
+	div.container-fluid
+		div.row.text-center
+			div.col-xs-12
+				div.btn-group
+					button.btn.btn-default(onClick=utils.info("hello nextgenjs")) info
+					button.btn.btn-info(onClick=utils.notice("hello nextgenjs")) notice
+					button.btn.btn-warning(onClick=utils.warn("hello nextgenjs")) warn
+					button.btn.btn-danger(onClick=utils.error("hello nextgenjs")) error
+		div.row.text-center
+			div.col-xs-12
+				div(id="calendar")
+	//
+	//	calendar day popup
+	//
+	if state.workday
+		div.modal.fade(tabIndex="-1" id="calendarday")
+			div.modal-dialog.modal-lg
+				div.modal-content
+					div.modal-header
+						button.close(data-dismiss="modal")
+							span &times;
+						h4.modal-title= state.workday.locale('ru').format('dddd Do MMMM YYYY')
+					div.modal-body
+						div.container-fluid
+							div.row.text-center
+								div.col-xs-12
+									div.progress
+										div.progress-bar.progress-bar-striped.active.color0(style="width:20%") PB
+							div.row.text-center
+								div.col-xs-12.form-inline(id="datepair")
+									input.form-control.date.start(type="text" placeholder="дата начала")
+									input.form-control.time.start(type="text" placeholder="время начала")
+									input.form-control.time.end(type="text" placeholder="время окончания")
+									input.form-control.date.end(type="text" placeholder="дата окончания")
+					div.modal-footer
+						button.btn.btn-default(data-dismiss="modal") закрыть
+						button.btn.btn-primary сохранить
 //
-//	CONTENT
+//	PAGE CONTENT
 //
-nav.navbar.navbar-default.navbar-fixed-top.transparent.text-center
-	div.btn-group
-		button.btn.btn-default.navbar-btn(onClick=utils.CMD_get_state(state)) CMD_get_state
-		button.btn.btn-info.navbar-btn(onClick=utils.notice("hello nextgenjs")) notice
-		button.btn.btn-warning.navbar-btn(onClick=utils.warn("hello nextgenjs")) warn
-		button.btn.btn-danger.navbar-btn(onClick=utils.error("hello nextgenjs")) error
-div.container-fluid
-	div.row.text-center
-		div.col-xs-12
-			div.btn-group
-				button.btn.btn-default(onClick=utils.info("hello nextgenjs")) info
-				button.btn.btn-info(onClick=utils.notice("hello nextgenjs")) notice
-				button.btn.btn-warning(onClick=utils.warn("hello nextgenjs")) warn
-				button.btn.btn-danger(onClick=utils.error("hello nextgenjs")) error
-	div.row.text-center
-		div.col-xs-12
-			div(id="calendar")
-//
-//	calendar day popup
-//
-
-if state.workday
-	div.modal.fade(tabIndex="-1" id="calendarday")
-		div.modal-dialog.modal-lg
-			div.modal-content
-				div.modal-header
-					button.close(data-dismiss="modal")
-						span &times;
-					h4.modal-title= state.workday.locale('ru').format('dddd Do MMMM YYYY')
-				div.modal-body
-					div.container-fluid
-						div.row.text-center
-							div.col-xs-12
-								div.progress
-									div.progress-bar.progress-bar-striped.active.color0(style="width:20%") PB
-						div.row.text-center
-							div.col-xs-12.form-inline(id="datepair")
-								input.form-control.date.start(type="text" placeholder="дата начала")
-								input.form-control.time.start(type="text" placeholder="время начала")
-								input.form-control.time.end(type="text" placeholder="время окончания")
-								input.form-control.date.end(type="text" placeholder="дата окончания")
-				div.modal-footer
-					button.btn.btn-default(data-dismiss="modal") закрыть
-					button.btn.btn-primary сохранить
+if state.response_state
+	+main
+else
+	+auth

@@ -116,9 +116,16 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		if not(state.calendar) and calendar
 			state.calendar = $(calendar).fullCalendar(calendar_opts)
 			console.log("render calendar")
+	render_tooltips = () ->
+		$('[data-toggle="tooltip"]').tooltip()
+		out = $(".tooltip").attr('id')
+		if out and ($("[aria-describedby='"+out+"']").length == 0)
+			$( document.getElementById(out) ).remove()
+			console.log("destroy tooltip "+out)
 	render = () ->
 		render_datepair()
 		render_calendar()
+		render_tooltips()
 		react.render(widget(fullstate), document.getElementById("main_frame"))
 		setTimeout(render, 500)
 	require("main")(state, utils)

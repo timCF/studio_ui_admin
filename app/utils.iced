@@ -33,16 +33,16 @@ module.exports =
 				else
 					switch response.status
 						when 'RS_error' then utils.error(response.message)
-						when 'RS_ok_state' then state.response_state = response.state
+						when 'RS_ok_state'
+							store.set("login", state.request_template.login)
+							store.set("password", state.request_template.password)
+							state.response_state = response.state
 				console.log(state.response_state)
 		xhr.send(data)
 	CMD_get_state: (state) ->
 		utils = @
-		req = new utils.proto.Request
+		req = state.request_template
 		req.cmd = 'CMD_get_state'
-		req.client_kind = 'CK_admin'
-		req.login = ''
-		req.password = ''
 		utils.xmlhttpreq( utils.proto.Request.encode(req).toArrayBuffer(), req.cmd, state )
 	stringifyEnums: (message) ->
 		utils = @
@@ -63,3 +63,14 @@ module.exports =
 							else
 								message[field] = utils.stringifyEnums(message[field]))
 		message
+	maybe_from_store: (key, defval) ->
+		value = store.get(key)
+		if value then value else defval
+	logout: (state) ->
+		store.remove("login")
+		store.remove("password")
+		state.response_state = false
+		if state.request_template
+			state.request_template.login = ''
+			state.request_template.password = ''
+		location.reload()

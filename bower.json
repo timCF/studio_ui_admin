@@ -25,6 +25,8 @@
     "jt.timepicker": "^1.11.1",
     "datepair.js": "^0.4.14",
     "bootstrap-datepicker": "^1.6.1",
-    "fullcalendar": "^2.8.0"
+    "fullcalendar": "^2.8.0",
+    "store2": "store#^2.3.2",
+    "font-awesome": "^4.6.3"
   }
 }

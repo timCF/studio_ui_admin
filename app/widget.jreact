@@ -13,21 +13,25 @@ mixin fileinput(path)
 	div.btn.btn-default.btn-lg.btn-file.fill Browse or drag and drop files
 		input(type="file" multiple="true" onChange=utils.view_files(state, path))
 mixin auth
-	div.center_abs.text-center
-		div.form-inline
-			input.form-control(type="text" placeholder="логин" onChange=utils.view_set(state, ["request_template","login"]))
-			input.form-control(type="text" placeholder="пароль" onChange=utils.view_set(state, ["request_template","password"]))
-			button.btn.btn-primary(onClick=utils.CMD_get_state(state)) CMD_get_state
+	div.center_abs.widthlim
+		input.form-control.fill(type="text" placeholder="логин" onChange=utils.view_set(state, ["request_template","login"]))
+		input.form-control.fill(type="text" placeholder="пароль" onChange=utils.view_set(state, ["request_template","password"]))
+		button.btn.btn-primary.fill(data-toggle="tooltip" data-placement="bottom" title="войти" onClick=utils.CMD_get_state(state))
+			span.myicon(class="fa fa-sign-in" aria-hidden="true")
 mixin main
 	nav.navbar.navbar-default.navbar-fixed-top.transparent.text-center
 		div.btn-group
 			button.btn.btn-default.navbar-btn(onClick=utils.CMD_get_state(state)) CMD_get_state
-			button.btn.btn-info.navbar-btn(onClick=utils.notice("hello nextgenjs")) notice
-			button.btn.btn-warning.navbar-btn(onClick=utils.warn("hello nextgenjs")) warn
-			button.btn.btn-danger.navbar-btn(onClick=utils.error("hello nextgenjs")) error
+			button.btn.btn-danger.navbar-btn(data-toggle="tooltip" data-placement="bottom" title="выйти" onClick=utils.logout(state))
+				span.myicon(class="fa fa-sign-out" aria-hidden="true")
 	div.container-fluid
 		div.row.text-center
 			div.col-xs-12
+				div.btn-group
+					button.btn.btn-default(onClick=utils.info("hello nextgenjs")) info
+					button.btn.btn-info(onClick=utils.notice("hello nextgenjs")) notice
+					button.btn.btn-warning(onClick=utils.warn("hello nextgenjs")) warn
+					button.btn.btn-danger(onClick=utils.error("hello nextgenjs")) error
 				div.btn-group
 					button.btn.btn-default(onClick=utils.info("hello nextgenjs")) info
 					button.btn.btn-info(onClick=utils.notice("hello nextgenjs")) notice

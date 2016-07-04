@@ -96,8 +96,13 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			time: {start: '', end: ''}
 		}
 	}
+	render = () ->
+		render_datepair()
+		render_calendar()
+		render_tooltips()
+		react.render(widget(fullstate), document.getElementById("main_frame"))
 	# some compile-time defined utils, frozen
-	utils = Object.freeze(tmp = require("utils") ; tmp.proto = require("protobufjs").loadProtoFile("./studio_proto/studio.proto").build("lemooor.studio") ; tmp)
+	utils = Object.freeze(tmp = require("utils") ; tmp.proto = require("protobufjs").loadProtoFile("./studio_proto/studio.proto").build("lemooor.studio") ; tmp.render = render ; tmp)
 	# full state structure, frozen
 	fullstate = Object.freeze({state: state, utils: utils})
 	react = require("react-dom")
@@ -127,11 +132,8 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		if out and ($("[aria-describedby='"+out+"']").length == 0)
 			$( document.getElementById(out) ).remove()
 			console.log("destroy tooltip "+out)
-	render = () ->
-		render_datepair()
-		render_calendar()
-		render_tooltips()
-		react.render(widget(fullstate), document.getElementById("main_frame"))
-		setTimeout(render, 500)
+	render_coroutine = () ->
+		render()
+		setTimeout(render_coroutine, 500)
 	require("main")(state, utils)
-	render()
+	render_coroutine()

@@ -5,10 +5,17 @@ module.exports =
 	warn: (mess) -> $.growl.warning({ message: mess , duration: 20000})
 	notice: (mess) -> $.growl.notice({ message: mess , duration: 20000})
 	info: (mess) -> $.growl({ message: mess , duration: 20000})
+	view_put: (state, path, data) -> Imuta.update_in(state, path, (_) -> data)
 	view_set: (state, path, ev) ->
 		if (ev? and ev.target? and ev.target.value?)
 			subj = ev.target.value
 			Imuta.update_in(state, path, (_) -> subj)
+	set_location: (state, ev) ->
+		utils = @
+		state.ids.location = false
+		state.ids.room = false
+		utils.render()
+		utils.view_set(state, ["ids","location"], ev)
 	view_swap: (state, path) ->
 		Imuta.update_in(state, path, (bool) -> not(bool))
 	view_files: (state, path, ev) ->

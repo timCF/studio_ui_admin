@@ -20,29 +20,28 @@ mixin auth
 			span.myicon(class="fa fa-sign-in" aria-hidden="true")
 mixin main
 	nav.navbar.navbar-default.navbar-fixed-top.transparent.text-center
-		div.btn-group
-			button.btn.btn-default.navbar-btn(onClick=utils.CMD_get_state(state)) CMD_get_state
+		div.btn-group.ml
+			- var defval = "база"
+			select.form-control(onChange=utils.set_location(state))
+				option(value="" disabled selected)= defval
+				each el in state.response_state.locations
+					- var this_id = parseInt(el.id.toString())
+					option(value=this_id)= el.name
+		if state.ids.location
+			- var rooms = state.response_state.rooms.filter(function(el){return parseInt(el.location_id.toString()) == state.ids.location;})
+			- var defval = "комната"
+			div.btn-group.ml
+				select.form-control(onChange=utils.view_set(state, ["ids","room"]))
+					option(value="" disabled selected)= defval
+					each el in rooms
+						- var this_id = parseInt(el.id.toString())
+						option(value=this_id)= el.name
+		div.btn-group.ml
+			button.btn.btn-info.navbar-btn(data-toggle="tooltip" data-placement="bottom" title="обновить" onClick=utils.CMD_get_state(state))
+				span.myicon(class="fa fa-refresh" aria-hidden="true")
 			button.btn.btn-danger.navbar-btn(data-toggle="tooltip" data-placement="bottom" title="выйти" onClick=utils.logout(state))
 				span.myicon(class="fa fa-sign-out" aria-hidden="true")
-	div.container-fluid
-		div.row.text-center
-			div.col-xs-12
-				div.btn-group
-					each el in state.response_state.locations
-						div= el.id.toString()
-						//- var style = (state.ids.location == el.id)
-						//- code... TODO
-					button.btn.btn-default(onClick=utils.info("hello nextgenjs")) info
-					button.btn.btn-info(onClick=utils.notice("hello nextgenjs")) notice
-					button.btn.btn-warning(onClick=utils.warn("hello nextgenjs")) warn
-					button.btn.btn-danger(onClick=utils.error("hello nextgenjs")) error
-		div.row.text-center
-			div.col-xs-12
-				div.btn-group
-					button.btn.btn-default(onClick=utils.info("hello nextgenjs")) info
-					button.btn.btn-info(onClick=utils.notice("hello nextgenjs")) notice
-					button.btn.btn-warning(onClick=utils.warn("hello nextgenjs")) warn
-					button.btn.btn-danger(onClick=utils.error("hello nextgenjs")) error
+	div.container-fluid.mt
 		div.row.text-center
 			div.col-xs-12
 				div(id="calendar")

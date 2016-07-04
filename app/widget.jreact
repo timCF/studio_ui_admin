@@ -28,10 +28,16 @@ mixin main
 		div.row.text-center
 			div.col-xs-12
 				div.btn-group
+					each el in state.response_state.locations
+						div= el.id.toString()
+						//- var style = (state.ids.location == el.id)
+						//- code... TODO
 					button.btn.btn-default(onClick=utils.info("hello nextgenjs")) info
 					button.btn.btn-info(onClick=utils.notice("hello nextgenjs")) notice
 					button.btn.btn-warning(onClick=utils.warn("hello nextgenjs")) warn
 					button.btn.btn-danger(onClick=utils.error("hello nextgenjs")) error
+		div.row.text-center
+			div.col-xs-12
 				div.btn-group
 					button.btn.btn-default(onClick=utils.info("hello nextgenjs")) info
 					button.btn.btn-info(onClick=utils.notice("hello nextgenjs")) notice

@@ -81,6 +81,11 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	state = {
 		opts: {},
 		data: {},
+		# current data
+		ids: {
+			location: false,
+			room: false
+		},
 		request_template: false,
 		response_state: false,
 		workday: moment(),

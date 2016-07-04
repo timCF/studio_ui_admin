@@ -1,4 +1,5 @@
 proto2base64 = require('base64-arraybuffer')
+statestamp = new Date().getTime()
 module.exports =
 	error: (mess) -> $.growl.error({ message: mess , duration: 20000})
 	warn: (mess) -> $.growl.warning({ message: mess , duration: 20000})
@@ -36,9 +37,22 @@ module.exports =
 						when 'RS_ok_state'
 							store.set("login", state.request_template.login)
 							store.set("password", state.request_template.password)
+							# for log polling
+							state.request_template.subject.hash = response.state.hash
 							state.response_state = response.state
+							statestamp = new Date().getTime()
 				console.log(state.response_state)
 		xhr.send(data)
+	state_coroutine: (state) ->
+		utils = @
+		# if is auth AND timeout 1.5 min gone - reset hash and reconnect
+		# server shuold response in 1 min always ( timeout for long polling )
+		if state.request_template and (state.request_template.login != '') and (state.request_template.password != '') and (((new Date().getTime()) - statestamp) > 90000)
+			utils.warn("соединение с сервером потеряно, пытаюсь переподключиться ... ")
+			state.request_template.subject.hash = ''
+			state.response_state = false
+			utils.CMD_get_state(state)
+		setTimeout((() -> utils.state_coroutine(state)), 1000)
 	CMD_get_state: (state) ->
 		utils = @
 		req = state.request_template

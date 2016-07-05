@@ -14,10 +14,11 @@ mixin fileinput(path)
 		input(type="file" multiple="true" onChange=utils.view_files(state, path))
 mixin auth
 	div.center_abs.widthlim
-		input.form-control.fill(type="text" placeholder="логин" onChange=utils.view_set(state, ["request_template","login"]))
-		input.form-control.fill(type="text" placeholder="пароль" onChange=utils.view_set(state, ["request_template","password"]))
-		button.btn.btn-primary.fill(data-toggle="tooltip" data-placement="bottom" title="войти" onClick=utils.CMD_get_state(state))
-			span.myicon(class="fa fa-sign-in" aria-hidden="true")
+		form
+			input.form-control.fill.megaform(tabIndex="1" type="text" id="login" placeholder="логин" autoComplete="on" onChange=utils.view_set(state, ["request_template","login"]))
+			input.form-control.fill.megaform(tabIndex="2" type="password" id="password" placeholder="пароль" autoComplete="off" onChange=utils.view_set(state, ["request_template","password"]))
+			button.btn.btn-primary.fill.submitmegaform(type="submit" data-toggle="tooltip" data-placement="bottom" title="войти" onClick=utils.CMD_get_state(state))
+				span.myicon(class="fa fa-sign-in" aria-hidden="true")
 mixin main
 	nav.navbar.navbar-default.navbar-fixed-top.transparent.text-center
 		div.btn-group.ml
@@ -25,20 +26,19 @@ mixin main
 			select.form-control(onChange=utils.set_location(state))
 				option(value="" disabled selected)= defval
 				each el in state.response_state.locations
-					- var this_id = parseInt(el.id.toString())
-					option(value=this_id)= el.name
+					option(value=el.id)= el.name
 		if state.ids.location
-			- var rooms = state.response_state.rooms.filter(function(el){return parseInt(el.location_id.toString()) == state.ids.location;})
+			- var rooms = state.response_state.rooms.filter(function(el){return el.location_id.compare(state.ids.location) == 0;})
 			- var defval = "комната"
 			div.btn-group.ml
 				select.form-control(onChange=utils.view_set(state, ["ids","room"]))
 					option(value="" disabled selected)= defval
 					each el in rooms
-						- var this_id = parseInt(el.id.toString())
-						option(value=this_id)= el.name
+						option(value=el.id)= el.name
 		div.btn-group.ml
-			button.btn.btn-info.navbar-btn(data-toggle="tooltip" data-placement="bottom" title="обновить" onClick=utils.CMD_get_state(state))
-				span.myicon(class="fa fa-refresh" aria-hidden="true")
+			- var maybe_admin = state.response_state.admins.filter(function(el){return (el.login == state.request_template.login) && (el.password == state.request_template.password);})[0]
+			- var this_admin_name = (maybe_admin ? maybe_admin.name : "anon") 
+			button.btn.btn-info.navbar-btn(data-toggle="tooltip" data-placement="bottom" title="обновить" onClick=utils.CMD_get_state(state))= this_admin_name
 			button.btn.btn-danger.navbar-btn(data-toggle="tooltip" data-placement="bottom" title="выйти" onClick=utils.logout(state))
 				span.myicon(class="fa fa-sign-out" aria-hidden="true")
 	div.container-fluid.mt

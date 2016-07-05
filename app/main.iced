@@ -7,6 +7,7 @@ module.exports = (state, utils) ->
 			if(nextElement.length != 0)
 				nextElement.focus()
 			else
+				$('[tabindex="1"]').focus()
 				$('.submitmegaform')[0].click()
 	$(document).on("keypress",".megaform", jqcb)
 	# request template

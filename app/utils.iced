@@ -1,10 +1,10 @@
 proto2base64 = require('base64-arraybuffer')
 statestamp = new Date().getTime()
 module.exports =
-	error: (mess) -> $.growl.error({ message: mess , duration: 20000})
-	warn: (mess) -> $.growl.warning({ message: mess , duration: 20000})
-	notice: (mess) -> $.growl.notice({ message: mess , duration: 20000})
-	info: (mess) -> $.growl({ message: mess , duration: 20000})
+	error: (mess) -> $.growl.error({title: '', message: mess , duration: 20000})
+	warn: (mess) -> $.growl.warning({title: '', message: mess , duration: 20000})
+	notice: (mess) -> $.growl.notice({title: '', message: mess , duration: 20000})
+	info: (mess) -> $.growl({title: '', message: mess , duration: 20000})
 	view_put: (state, path, data) -> Imuta.update_in(state, path, (_) -> data)
 	view_set: (state, path, ev) ->
 		if (ev? and ev.target? and ev.target.value?)
@@ -32,7 +32,7 @@ module.exports =
 		utils = @
 		xhr = new XMLHttpRequest()
 		xhr.responseType = "arraybuffer"
-		xhr.open('POST', 'http://127.0.0.1:9866', true)
+		xhr.open('POST', 'http://127.0.0.1:9866?random='+Math.random(), true)
 		xhr.onreadystatechange = () ->
 			if (xhr.readyState == 4)
 				response = utils.decode_proto( proto2base64.encode(xhr.response) )
@@ -48,6 +48,7 @@ module.exports =
 							state.request_template.subject.hash = response.state.hash
 							state.response_state = response.state
 							statestamp = new Date().getTime()
+				console.log(state.request_template)
 				console.log(state.response_state)
 		xhr.send(data)
 	state_coroutine: (state) ->

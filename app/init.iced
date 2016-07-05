@@ -100,6 +100,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		render_datepair()
 		render_calendar()
 		render_tooltips()
+		render_jqcb()
 		react.render(widget(fullstate), document.getElementById("main_frame"))
 	# some compile-time defined utils, frozen
 	utils = Object.freeze(tmp = require("utils") ; tmp.proto = require("protobufjs").loadProtoFile("./studio_proto/studio.proto").build("lemooor.studio") ; tmp.render = render ; tmp)
@@ -135,5 +136,8 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	render_coroutine = () ->
 		render()
 		setTimeout(render_coroutine, 500)
+	render_jqcb = () ->
+		# NOTICE !!! not reload page on submit forms
+		$('form').submit((e) -> e.preventDefault())
 	require("main")(state, utils)
 	render_coroutine()

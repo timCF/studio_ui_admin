@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "base64-arraybuffer": "^0.1.5",
+    "brunch": "^2.8.2",
     "css-brunch": "^2.0.0",
     "envify": "^1.2.1",
     "iced-coffee-script-brunch": "^1.7.0",

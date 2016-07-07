@@ -33,23 +33,22 @@ module.exports =
 		xhr = new XMLHttpRequest()
 		xhr.responseType = "arraybuffer"
 		xhr.open('POST', 'http://127.0.0.1:9866?random='+Math.random(), true)
-		xhr.onreadystatechange = () ->
-			if (xhr.readyState == 4)
-				response = utils.decode_proto( proto2base64.encode(xhr.response) )
-				if Imuta.is_string(response)
-					utils.error(response)
-				else
-					switch response.status
-						when 'RS_error' then utils.error(response.message)
-						when 'RS_ok_state'
-							store.set("login", state.request_template.login)
-							store.set("password", state.request_template.password)
-							# for log polling
-							state.request_template.subject.hash = response.state.hash
-							state.response_state = response.state
-							statestamp = new Date().getTime()
-				console.log(state.request_template)
-				console.log(state.response_state)
+		xhr.onload = () ->
+			response = utils.decode_proto( proto2base64.encode(xhr.response) )
+			if Imuta.is_string(response)
+				utils.error(response)
+			else
+				switch response.status
+					when 'RS_error' then utils.error(response.message)
+					when 'RS_ok_state'
+						store.set("login", state.request_template.login)
+						store.set("password", state.request_template.password)
+						# for log polling
+						state.request_template.subject.hash = response.state.hash
+						state.response_state = response.state
+						statestamp = new Date().getTime()
+			console.log(state.request_template)
+			console.log(state.response_state)
 		xhr.send(data)
 	state_coroutine: (state) ->
 		utils = @

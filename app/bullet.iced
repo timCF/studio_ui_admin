@@ -20,16 +20,20 @@ module.exports = (utils, state) ->
 	long2date = (long) ->
 		moment(1000 * parseInt(long.toString())).format('YYYY-MM-DD HH:mm:ss')
 	# this shit is one way to refresh events on calendar ...
-	utils.rerender_events = () ->
-		if state.calendar
+	utils.rerender_events_coroutine = (prevstate) ->
+		# rm html elements and create new state ...
+		newstate = jf.reduce(state, {}, (k,v,acc) -> (if (k in ["workday","datepair","calendar"]) then acc else jf.put_in(acc, [k], jf.clone(v))))
+		if (state.calendar and not(jf.equal(prevstate, newstate)))
 			$(state.calendar).fullCalendar('removeEvents')
 			state.events.forEach((el) ->
 				room_pred = ((el.room_id.toString() == state.ids.room.toString()) or ((state.ids.room == false) and (state.ids.location == false)))
 				location_pred = ((state.ids.room == false) and ((state.rooms_of_locations[el.room_id.toString()] == state.ids.location.toString()) or (state.ids.location == false)))
 				if (room_pred or location_pred) then $(state.calendar).fullCalendar( 'renderEvent', el, true ))
-			console.log("re-render events")
+			console.log("re-render events ... new state is")
+			console.log(state)
+			setTimeout((() -> utils.rerender_events_coroutine(newstate)), 500)
 		else
-			setTimeout(utils.rerender_events, 1000)
+			setTimeout((() -> utils.rerender_events_coroutine(prevstate)), 500)
 	port = ':7770' # (if location.port then ":"+location.port else "")
 	bullet = $.bullet((if window.location.protocol == "https:" then "wss://" else "ws://") + location.hostname + port + location.pathname + "bullet")
 	utils.bullet = bullet
@@ -38,7 +42,7 @@ module.exports = (utils, state) ->
 		bullet.send( utils.encode_proto(data) )
 	utils.bullet.onopen = () ->
 		if ((state.request_template.login != '') and (state.request_template.password != ''))
-			utils.CMD_get_state(state)
+			utils.CMD_get_state()
 		else
 			utils.bullet.onheartbeat()
 		utils.notice("соединение с сервером установлено")
@@ -56,19 +60,18 @@ module.exports = (utils, state) ->
 			when "RS_ok_void" then "ok"
 			when "RS_error" then utils.error(data.message)
 			when "RS_notice" then utils.notice(data.message)
-			when "RS_refresh" then (if state.response_state then utils.CMD_get_state(state))
+			when "RS_refresh" then (if state.response_state then utils.CMD_get_state())
 			when "RS_ok_state"
 				store.set("login", state.request_template.login)
 				store.set("password", state.request_template.password)
 				state.request_template.subject.hash = data.state.hash
-				if (data.state.sessions and not(jf.equal(data.state.sessions, state.response_state.sessions)))
-					state.events = data.state.sessions.map(create_event)
-					utils.rerender_events()
+				if (data.state.sessions) then (state.events = data.state.sessions.map(create_event))
 				state.response_state = data.state
 				state.rooms_of_locations = jf.reduce(data.state.rooms, {}, ({id: id, location_id: lid}, acc) -> jf.put_in(acc, id.toString(), lid.toString()))
 		if not(render_started)
 			console.log("start render")
 			utils.render_coroutine()
+			utils.rerender_events_coroutine(null)
 			if not(state.response_state) then $('[tabindex="' + 1  + '"]').focus()
 			render_started = true
 	utils

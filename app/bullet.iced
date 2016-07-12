@@ -35,10 +35,7 @@ module.exports = (utils, state) ->
 			when "RS_ok_void" then "ok"
 			when "RS_error" then utils.error(data.message)
 			when "RS_notice" then utils.notice(data.message)
-			#
-			#	TODO
-			#
-			#when "refreshstate" then (if state.auth then utils.get_state())
+			when "RS_refresh" then (if state.response_state then utils.CMD_get_state(state))
 			when "RS_ok_state"
 				store.set("login", state.request_template.login)
 				store.set("password", state.request_template.password)

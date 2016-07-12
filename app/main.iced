@@ -19,7 +19,3 @@ module.exports = (state, utils) ->
 	req.subject = new utils.proto.FullState
 	req.subject.hash = ''
 	state.request_template = req
-	if ((req.login != '') and (req.password != '')) then utils.CMD_get_state(state)
-	utils.state_coroutine(state)
-	utils.render()
-	if not(state.response_state) then $('[tabindex="' + 1  + '"]').focus()

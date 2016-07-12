@@ -27,6 +27,8 @@
     "bootstrap-datepicker": "^1.6.1",
     "fullcalendar": "^2.8.0",
     "store2": "store#^2.3.2",
-    "font-awesome": "^4.6.3"
+    "font-awesome": "^4.6.3",
+    "bulletjs": "*",
+    "moment": "^2.14.1"
   }
 }

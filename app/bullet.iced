@@ -7,8 +7,29 @@ module.exports = (utils, state) ->
 		msg.password = state.request_template.password
 		msg.cmd = 'CMD_ping'
 		msg
+	create_event = ({id: id, time_from: time_from, time_to: time_to, room_id: room_id}) ->
+		m_from = moment(time_from * 1000)
+		m_to = moment(time_to * 1000)
+		{
+			title: m_from.format('HH:mm')+" - "+m_to.format('HH:mm'),
+			start: m_from.format('YYYY-MM-DD'),
+			end: m_to.format('YYYY-MM-DD'),
+			percentfill: (time_to - time_from) / 10800,
+			room_id: room_id
+		}
 	long2date = (long) ->
 		moment(1000 * parseInt(long.toString())).format('YYYY-MM-DD HH:mm:ss')
+	# this shit is one way to refresh events on calendar ...
+	utils.rerender_events = () ->
+		if state.calendar
+			$(state.calendar).fullCalendar('removeEvents')
+			state.events.forEach((el) ->
+				room_pred = ((el.room_id.toString() == state.ids.room.toString()) or ((state.ids.room == false) and (state.ids.location == false)))
+				location_pred = ((state.ids.room == false) and ((state.rooms_of_locations[el.room_id.toString()] == state.ids.location.toString()) or (state.ids.location == false)))
+				if (room_pred or location_pred) then $(state.calendar).fullCalendar( 'renderEvent', el, true ))
+			console.log("re-render events")
+		else
+			setTimeout(utils.rerender_events, 1000)
 	port = ':7770' # (if location.port then ":"+location.port else "")
 	bullet = $.bullet((if window.location.protocol == "https:" then "wss://" else "ws://") + location.hostname + port + location.pathname + "bullet")
 	utils.bullet = bullet
@@ -40,7 +61,11 @@ module.exports = (utils, state) ->
 				store.set("login", state.request_template.login)
 				store.set("password", state.request_template.password)
 				state.request_template.subject.hash = data.state.hash
+				if (data.state.sessions and not(jf.equal(data.state.sessions, state.response_state.sessions)))
+					state.events = data.state.sessions.map(create_event)
+					utils.rerender_events()
 				state.response_state = data.state
+				state.rooms_of_locations = jf.reduce(data.state.rooms, {}, ({id: id, location_id: lid}, acc) -> jf.put_in(acc, id.toString(), lid.toString()))
 		if not(render_started)
 			console.log("start render")
 			utils.render_coroutine()

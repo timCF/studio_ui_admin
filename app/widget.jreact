@@ -19,7 +19,7 @@ mixin auth
 			input.form-control.fill.megaform(tabIndex="2" type="password" id="password" placeholder="пароль" autoComplete="off" onChange=utils.view_set(state, ["request_template","password"]))
 			button.btn.btn-primary.fill.submitmegaform(type="submit" data-toggle="tooltip" data-placement="bottom" title="войти" onClick=utils.CMD_get_state(state))
 				span.myicon(class="fa fa-sign-in" aria-hidden="true")
-mixin main
+mixin navbar()
 	nav.navbar.navbar-default.navbar-fixed-top.transparent.text-center
 		div.btn-group.ml
 			- var defval = "база"
@@ -31,7 +31,7 @@ mixin main
 			- var rooms = state.response_state.rooms.filter(function(el){return el.location_id.compare(state.ids.location) == 0;})
 			- var defval = "комната"
 			div.btn-group.ml
-				select.form-control(onChange=utils.view_set(state, ["ids","room"]))
+				select.form-control(onChange=utils.set_room(state, ["ids","room"]))
 					option(value="" disabled selected)= defval
 					each el in rooms
 						option(value=el.id)= el.name
@@ -41,6 +41,7 @@ mixin main
 			button.btn.btn-info.navbar-btn(data-toggle="tooltip" data-placement="bottom" title="обновить" onClick=utils.CMD_get_state(state))= this_admin_name
 			button.btn.btn-danger.navbar-btn(data-toggle="tooltip" data-placement="bottom" title="выйти" onClick=utils.logout(state))
 				span.myicon(class="fa fa-sign-out" aria-hidden="true")
+mixin calendar_main()
 	div.container-fluid.mt
 		div.row.text-center
 			div.col-xs-12
@@ -75,6 +76,8 @@ mixin main
 //	PAGE CONTENT
 //
 if state.response_state
-	+main
+	+navbar
+	if state.current_page == "calendar_main"
+		+calendar_main()
 else
 	+auth

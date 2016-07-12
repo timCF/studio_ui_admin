@@ -15,6 +15,11 @@ module.exports =
 		state.ids.room = false
 		utils.render()
 		utils.view_set(state, ["ids","location"], ev)
+		utils.rerender_events()
+	set_room: (state, path, ev) ->
+		utils = @
+		utils.view_set(state, path, ev)
+		utils.rerender_events()
 	view_swap: (state, path) ->
 		Imuta.update_in(state, path, (bool) -> not(bool))
 	view_files: (state, path, ev) ->

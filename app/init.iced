@@ -20,65 +20,13 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		lang: 'ru',
 		firstDay: 1,
 		dayClick: ((date, _, __) -> state.workday = date ; $('#datepair .date.start').datepicker('setDate', date.toDate()) ; $('#calendarday').modal()),
-		eventAfterRender: ((data, element, _) -> $(element).css('width', ($(element).width() * data.percentfill) + 'px')),
-		events: [
-			{
-				title: 'event1',
-				start: '2016-06-01',
-				percentfill: 0.5
-			},
-			{
-				title: 'event2',
-				start: '2016-06-05',
-				end: '2016-06-07',
-				percentfill: 0.2
-			},
-			{
-				title: 'event5',
-				start: '2016-06-05',
-				end: '2016-06-07',
-				percentfill: 0.2
-			},
-			{
-				title: 'event5',
-				start: '2016-06-05',
-				end: '2016-06-07',
-				percentfill: 0.2
-			},
-			{
-				title: 'event5',
-				start: '2016-06-05',
-				end: '2016-06-07',
-				percentfill: 0.2
-			},
-			{
-				title: 'event5',
-				start: '2016-06-05',
-				end: '2016-06-07',
-				percentfill: 0.2
-			},
-			{
-				title: 'event5',
-				start: '2016-06-05',
-				end: '2016-06-07',
-				percentfill: 0.2
-			},
-			{
-				title: 'event5',
-				start: '2016-06-05',
-				end: '2016-06-07',
-				percentfill: 0.2
-			},
-			{
-				title: 'event3',
-				start: '2016-06-09T12:30:00',
-				allDay: false
-				percentfill: 0.9
-			}
-		]
+		eventAfterRender: ((data, element, _) -> $(element).css('width', ($(element).width() * data.percentfill) + 'px'))
 	}
 	# state for main function, mutable
 	state = {
+		rooms_of_locations: {}, # just dict room_id => location_id
+		current_page: "calendar_main"
+		events: [], # calendar events to render
 		opts: {},
 		data: {},
 		# current data

@@ -35,3 +35,24 @@ module.exports =
 			state.request_template.login = ''
 			state.request_template.password = ''
 		location.reload()
+	new_session: (state) ->
+		utils = @
+		subj = new utils.proto.Session
+		subj.time_from = null
+		subj.time_to = null
+		subj.week_day = null
+		subj.room_id = state.ids.room
+		subj.instruments_ids = []
+		subj.band_id = null
+		subj.callback = false
+		subj.status = 'SS_awaiting_first'
+		subj.amount = 0
+		subj.description = ''
+		subj.ordered_by = 'SO_admin'
+		subj.admin_id_open = state.ids.admin
+		subj.admin_id_close = 0
+		subj.transaction_id = 0
+		subj
+	clone_proto: (data, datatype) ->
+		utils = @
+		utils.stringifyEnums(utils.proto[datatype].decode(utils.proto[datatype].encode(data)))

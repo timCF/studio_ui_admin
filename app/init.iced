@@ -1,4 +1,5 @@
 document.addEventListener "DOMContentLoaded", (e) ->
+	jf = require("jsfunky")
 	timepicker_opts = {
 		minTime: "9:00"
 		timeFormat: 'H:i',
@@ -20,20 +21,24 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		lang: 'ru',
 		firstDay: 1,
 		dayClick: ((date, _, __) ->
-			state.datepairval.time.start = ''
-			state.datepairval.time.end = ''
-			$('#datepair .time.start').timepicker('setTime', '')
-			$('#datepair .time.end').timepicker('setTime', '')
-			state.workday = date
-			$('#datepair .date.start').datepicker('setDate', date.toDate())
-			utils.render()
-			$('#calendarday').modal()),
+			if state.ids.room
+				state.datepairval.time.start = ''
+				state.datepairval.time.end = ''
+				$('#datepair .time.start').timepicker('setTime', '')
+				$('#datepair .time.end').timepicker('setTime', '')
+				state.workday = date
+				$('#datepair .date.start').datepicker('setDate', date.toDate())
+				state.new_session = utils.new_session(state)
+				utils.render()
+				$('#calendarday').modal()
+			else
+				utils.error("не выбрана комната")),
 		eventAfterRender: ((data, element, _) -> $(element).css('width', ($(element).width() * data.percentfill) + 'px'))
 		eventClick: (({id: id}, _, __) ->
-			state.current_session = state.response_state.sessions.filter(({id: this_id}) -> this_id == id)[0]
-			state.workday = moment(state.current_session.time_from.toString() * 1000)
-			ds = moment(state.current_session.time_from.toString() * 1000).toDate()
-			de = moment(state.current_session.time_to.toString() * 1000).toDate()
+			state.new_session = utils.clone_proto(state.response_state.sessions.filter(({id: this_id}) -> this_id == id)[0], "Session")
+			state.workday = moment(state.new_session.time_from.toString() * 1000)
+			ds = moment(state.new_session.time_from.toString() * 1000).toDate()
+			de = moment(state.new_session.time_to.toString() * 1000).toDate()
 			$('#datepair .date.start').datepicker('setDate', ds)
 			$('#datepair .date.end').datepicker('setDate', de)
 			$('#datepair .time.start').timepicker('setTime', ds)
@@ -44,7 +49,6 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	}
 	# state for main function, mutable
 	state = {
-		current_session: false,
 		colors: {
 			sesions: {
 				SS_awaiting_last:"#c1f0f0",
@@ -67,7 +71,8 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		# current data
 		ids: {
 			location: false,
-			room: false
+			room: false,
+			admin: false
 		},
 		request_template: false,
 		response_state: false,
@@ -77,7 +82,9 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		datepairval: {
 			date: {start: '', end: ''},
 			time: {start: '', end: ''}
-		}
+		},
+		new_session: null,
+		verbose: require("verbose")
 	}
 	render = () ->
 		state.dimensions.height = window.innerHeight

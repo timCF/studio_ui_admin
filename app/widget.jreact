@@ -19,8 +19,8 @@ mixin auth
 			input.form-control.fill.megaform(tabIndex="2" type="password" id="password" placeholder="пароль" autoComplete="off" onChange=utils.view_set(state, ["request_template","password"]))
 			button.btn.btn-primary.fill.submitmegaform(type="submit" data-toggle="tooltip" data-placement="bottom" title="войти" onClick=utils.CMD_get_state())
 				span.myicon(class="fa fa-sign-in" aria-hidden="true")
-mixin navbar()
-	nav.navbar.navbar-default.navbar-fixed-top.transparent.text-center
+mixin select_room_location(room_id)
+	if !room_id
 		div.btn-group.ml
 			- var defval = "база"
 			select.form-control(onChange=utils.set_location(state))
@@ -35,6 +35,18 @@ mixin navbar()
 					option(value="" disabled selected)= defval
 					each el in rooms
 						option(value=el.id)= el.name
+	else 
+		- var location_id = state.rooms_of_locations[room_id]
+		- var rooms = state.response_state.rooms.filter(function(el){return el.location_id.compare(location_id) == 0;})
+		select.form-control(onChange=utils.view_set(state, ["new_session","room_id"]))
+			each el in rooms
+				if (el.id == room_id)
+					option(value=el.id selected)= el.name
+				else 
+					option(value=el.id)= el.name
+mixin navbar()
+	nav.navbar.navbar-default.navbar-fixed-top.transparent.text-center
+		+select_room_location(false)
 		div.btn-group.ml
 			- var maybe_admin = state.response_state.admins.filter(function(el){return (el.login == state.request_template.login) && (el.password == state.request_template.password);})[0]
 			- var this_admin_name = (maybe_admin ? maybe_admin.name : "anon") 
@@ -46,9 +58,7 @@ mixin calendar_main()
 		div.row.text-center
 			div.col-xs-12
 				div(id="calendar")
-	//
-	//	calendar day popup
-	//
+mixin workday_popup()
 	if state.workday
 		div.modal.fade(tabIndex="-1" id="calendarday")
 			div.modal-dialog.modal-lg
@@ -65,6 +75,14 @@ mixin calendar_main()
 									input.form-control.time.start(type="text" placeholder="время начала")
 									input.form-control.time.end(type="text" placeholder="время окончания")
 									input.form-control.date.end(type="text" placeholder="дата окончания")
+							if state.new_session
+								div.row.text-center
+									div.col-xs-12.form-inline
+										each transl, k in state.verbose.session
+											if (k == "room_id")
+												div.mt.input-group
+													span.input-group-addon= transl
+													+select_room_location(state.new_session.room_id)
 					div.modal-footer
 						button.btn.btn-default(data-dismiss="modal") закрыть
 						button.btn.btn-primary сохранить
@@ -75,5 +93,6 @@ if state.response_state
 	+navbar
 	if state.current_page == "calendar_main"
 		+calendar_main()
+		+workday_popup()
 else
 	+auth

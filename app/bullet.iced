@@ -70,6 +70,7 @@ module.exports = (utils, state) ->
 				if (data.state.sessions) then (state.events = data.state.sessions.map(create_event))
 				state.response_state = data.state
 				state.rooms_of_locations = jf.reduce(data.state.rooms, {}, ({id: id, location_id: lid}, acc) -> jf.put_in(acc, id.toString(), lid.toString()))
+				state.ids.admin = state.response_state.admins.filter((el) -> return (el.login == state.request_template.login) && (el.password == state.request_template.password))[0].id
 		if not(render_started)
 			console.log("start render")
 			utils.render_coroutine()

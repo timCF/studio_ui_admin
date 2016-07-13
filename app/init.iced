@@ -20,12 +20,27 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		lang: 'ru',
 		firstDay: 1,
 		dayClick: ((date, _, __) ->
-			state.workday = date ; $('#datepair .date.start').datepicker('setDate', date.toDate()) ; $('#calendarday').modal()
-			console.log(state.workday)),
+			state.datepairval.time.start = ''
+			state.datepairval.time.end = ''
+			$('#datepair .time.start').timepicker('setTime', '')
+			$('#datepair .time.end').timepicker('setTime', '')
+			state.workday = date
+			$('#datepair .date.start').datepicker('setDate', date.toDate())
+			utils.render()
+			$('#calendarday').modal()),
 		eventAfterRender: ((data, element, _) -> $(element).css('width', ($(element).width() * data.percentfill) + 'px'))
 		eventClick: (({id: id}, _, __) ->
 			state.current_session = state.response_state.sessions.filter(({id: this_id}) -> this_id == id)[0]
-			console.log(state.current_session))
+			state.workday = moment(state.current_session.time_from.toString() * 1000)
+			ds = moment(state.current_session.time_from.toString() * 1000).toDate()
+			de = moment(state.current_session.time_to.toString() * 1000).toDate()
+			$('#datepair .date.start').datepicker('setDate', ds)
+			$('#datepair .date.end').datepicker('setDate', de)
+			$('#datepair .time.start').timepicker('setTime', ds)
+			$('#datepair .time.end').timepicker('setTime', de)
+			utils.render()
+			new_datepairval()
+			$('#calendarday').modal())
 	}
 	# state for main function, mutable
 	state = {
@@ -81,6 +96,12 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	fullstate = Object.freeze({state: state, utils: utils})
 	react = require("react-dom")
 	widget = require("widget")
+	new_datepairval = () ->
+		console.log("new datepairval")
+		state.datepairval.date.start = $('#datepair .date.start').datepicker('getDate')
+		state.datepairval.date.end = $('#datepair .date.end').datepicker('getDate')
+		state.datepairval.time.start = $('#datepair .time.start').timepicker('getTime')
+		state.datepairval.time.end = $('#datepair .time.end').timepicker('getTime')
 	render_datepair = () ->
 		datepair = document.getElementById('datepair')
 		if not(datepair) then (state.datepair = false)
@@ -88,11 +109,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			$('#datepair .time').timepicker(timepicker_opts)
 			$('#datepair .date').datepicker(datepicker_opts)
 			state.datepair = new Datepair(datepair, {defaultTimeDelta: 10800000})
-			$('#datepair').on('rangeSelected', () ->
-				state.datepairval.date.start = $('#datepair .date.start').datepicker('getDate')
-				state.datepairval.date.end = $('#datepair .date.end').datepicker('getDate')
-				state.datepairval.time.start = $('#datepair .time.start').timepicker('getTime')
-				state.datepairval.time.end = $('#datepair .time.end').timepicker('getTime'))
+			$('#datepair').on('rangeSelected', new_datepairval)
 			console.log("render datepair")
 	render_calendar = () ->
 		calendar = document.getElementById('calendar')

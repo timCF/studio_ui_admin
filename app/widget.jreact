@@ -83,6 +83,10 @@ mixin workday_popup()
 												div.mt.input-group
 													span.input-group-addon= transl
 													+select_room_location(state.new_session.room_id)
+											else if (k == "instruments_ids")
+												//
+												//	TODO
+												//
 					div.modal-footer
 						button.btn.btn-default(data-dismiss="modal") закрыть
 						button.btn.btn-primary сохранить

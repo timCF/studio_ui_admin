@@ -7,22 +7,24 @@ module.exports = (utils, state) ->
 		msg.password = state.request_template.password
 		msg.cmd = 'CMD_ping'
 		msg
-	create_event = ({id: id, time_from: time_from, time_to: time_to, room_id: room_id}) ->
+	create_event = ({id: id, time_from: time_from, time_to: time_to, room_id: room_id, status: status}) ->
 		m_from = moment(time_from * 1000)
 		m_to = moment(time_to * 1000)
 		{
+			id: id,
 			title: m_from.format('HH:mm')+" - "+m_to.format('HH:mm'),
 			start: m_from.format('YYYY-MM-DD'),
 			end: m_to.format('YYYY-MM-DD'),
 			percentfill: (time_to - time_from) / 10800,
-			room_id: room_id
+			room_id: room_id,
+			color: state.colors.sesions[status]
 		}
 	long2date = (long) ->
 		moment(1000 * parseInt(long.toString())).format('YYYY-MM-DD HH:mm:ss')
 	# this shit is one way to refresh events on calendar ...
 	utils.rerender_events_coroutine = (prevstate) ->
 		# rm html elements and create new state ...
-		newstate = jf.reduce(state, {}, (k,v,acc) -> (if (k in ["workday","datepair","calendar"]) then acc else jf.put_in(acc, [k], jf.clone(v))))
+		newstate = jf.reduce(state, {}, (k,v,acc) -> (if (k in ["workday","datepair","calendar","datepairval"]) then acc else jf.put_in(acc, [k], jf.clone(v))))
 		if (state.calendar and not(jf.equal(prevstate, newstate)))
 			$(state.calendar).fullCalendar('removeEvents')
 			state.events.forEach((el) ->

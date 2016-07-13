@@ -19,11 +19,31 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	calendar_opts = {
 		lang: 'ru',
 		firstDay: 1,
-		dayClick: ((date, _, __) -> state.workday = date ; $('#datepair .date.start').datepicker('setDate', date.toDate()) ; $('#calendarday').modal()),
+		dayClick: ((date, _, __) ->
+			state.workday = date ; $('#datepair .date.start').datepicker('setDate', date.toDate()) ; $('#calendarday').modal()
+			console.log(state.workday)),
 		eventAfterRender: ((data, element, _) -> $(element).css('width', ($(element).width() * data.percentfill) + 'px'))
+		eventClick: (({id: id}, _, __) ->
+			state.current_session = state.response_state.sessions.filter(({id: this_id}) -> this_id == id)[0]
+			console.log(state.current_session))
 	}
 	# state for main function, mutable
 	state = {
+		current_session: false,
+		colors: {
+			sesions: {
+				SS_awaiting_last:"#c1f0f0",
+				SS_awaiting_first:"#00ccff",
+				SS_closed_auto:"#c2d6d6",
+				SS_closed_ok:"#00cc99",
+				SS_canceled_soft:"#ffe6e6",
+				SS_canceled_hard:"#ff1a1a",
+			}
+		}
+		dimensions: {
+			width: 0,
+			height: 0
+		},
 		rooms_of_locations: {}, # just dict room_id => location_id
 		current_page: "calendar_main"
 		events: [], # calendar events to render
@@ -45,6 +65,8 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		}
 	}
 	render = () ->
+		state.dimensions.height = window.innerHeight
+		state.dimensions.width = window.innerWidth
 		render_datepair()
 		render_calendar()
 		render_tooltips()

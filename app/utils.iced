@@ -1,10 +1,10 @@
 proto2base64 = require('base64-arraybuffer')
 jf = require("jsfunky")
 module.exports =
-	error: (mess) -> $.growl.error({title: '', message: mess , duration: 20000})
-	warn: (mess) -> $.growl.warning({title: '', message: mess , duration: 20000})
-	notice: (mess) -> $.growl.notice({title: '', message: mess , duration: 20000})
-	info: (mess) -> $.growl({title: '', message: mess , duration: 20000})
+	error: (mess) -> toastr.error(mess)
+	warn: (mess) -> toastr.warning(mess)
+	notice: (mess) -> toastr.success(mess)
+	info: (mess) -> toastr.info(mess)
 	view_get: (state, path) -> jf.get_in(state, path)
 	view_put: (state, path, data) -> Imuta.update_in(state, path, (_) -> data)
 	view_set: (state, path, ev) ->

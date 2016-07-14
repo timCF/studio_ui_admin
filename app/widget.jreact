@@ -25,7 +25,7 @@ mixin auth
 				span.myicon(class="fa fa-sign-in" aria-hidden="true")
 mixin select_room_location(room_id)
 	if !room_id
-		div.btn-group.ml
+		div.btn-group.ml.mt
 			- var defval = "все базы"
 			select.selectpicker.form-control(onChange=utils.set_location(state))
 				option(value="" selected)= defval
@@ -34,7 +34,7 @@ mixin select_room_location(room_id)
 		if state.ids.location
 			- var rooms = state.response_state.rooms.filter(function(el){return el.location_id.compare(state.ids.location) == 0;})
 			- var defval = "все комнаты"
-			div.btn-group.ml
+			div.btn-group.ml.mt
 				select.selectpicker.form-control(onChange=utils.set_room(state, ["ids","room"]))
 					option(value="" selected)= defval
 					each el in rooms
@@ -49,15 +49,16 @@ mixin select_room_location(room_id)
 				else 
 					option(value=el.id style="background-color:"+el.color)= el.name
 mixin navbar()
-	nav.navbar.navbar-default.navbar-fixed-top.transparent.text-center
-		+select_room_location(false)
-		div.btn-group.ml
-			- var maybe_admin = state.response_state.admins.filter(function(el){return (el.login == state.request_template.login) && (el.password == state.request_template.password);})[0]
-			- var this_admin_name = (maybe_admin ? maybe_admin.name : "anon")
-			- var color = (state.ids.room ? "background-color:"+state.response_state.rooms.filter(function(el){return el.id.toString() == state.ids.room.toString();})[0].color : "")
-			span.btn.btn-default.navbar-btn.bold(style=color)= this_admin_name
-			button.btn.btn-primary.navbar-btn(data-toggle="tooltip" data-placement="bottom" title="выйти" onClick=utils.logout(state))
-				span.myicon(class="fa fa-sign-out" aria-hidden="true")
+	div.container-fluid
+		div.row.text-center
+			+select_room_location(false)
+			div.btn-group.ml.mt
+				- var maybe_admin = state.response_state.admins.filter(function(el){return (el.login == state.request_template.login) && (el.password == state.request_template.password);})[0]
+				- var this_admin_name = (maybe_admin ? maybe_admin.name : "anon")
+				- var color = (state.ids.room ? "background-color:"+state.response_state.rooms.filter(function(el){return el.id.toString() == state.ids.room.toString();})[0].color : "")
+				span.btn.btn-default.bold(style=color)= this_admin_name
+				button.btn.btn-primary(data-toggle="tooltip" data-placement="bottom" title="выйти" onClick=utils.logout(state))
+					span.myicon(class="fa fa-sign-out" aria-hidden="true")
 mixin calendar_main()
 	div.container-fluid.mt
 		div.row.text-center

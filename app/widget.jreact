@@ -5,10 +5,14 @@ mixin swapbutton(name, path, style)
 		button.btn.btn-success(class=style onClick=utils.view_swap(state, path))= name
 	else
 		button.btn.btn-default(class=style onClick=utils.view_swap(state, path))= name
-mixin selectitems(list, path, style)
-	select.form-control(class=style onChange=utils.view_set(state, path))
+mixin selectitems(list, path, dict)
+	select.selectpicker.form-control(onChange=utils.view_set(state, path))
+		- var currentval = utils.view_get(state, path)
 		each el in list
-			option= el
+			if (el == currentval)
+				option(value=el selected)= dict[el]
+			else 
+				option(value=el)= dict[el]
 mixin fileinput(path)
 	div.btn.btn-default.btn-lg.btn-file.fill Browse or drag and drop files
 		input(type="file" multiple="true" onChange=utils.view_files(state, path))
@@ -20,53 +24,54 @@ mixin auth
 			button.btn.btn-primary.fill.submitmegaform(type="submit" data-toggle="tooltip" data-placement="bottom" title="войти" onClick=utils.CMD_get_state())
 				span.myicon(class="fa fa-sign-in" aria-hidden="true")
 mixin select_room_location(room_id)
+	// - var color = (state.ids.room ? "background-color:"+state.response_state.rooms.filter(function(el){return el.id.toString() == state.ids.room.toString();})[0].color : "")
 	if !room_id
 		div.btn-group.ml
-			- var defval = "база"
+			- var defval = "все базы"
 			select.selectpicker.form-control(onChange=utils.set_location(state))
-				option(value="" disabled selected)= defval
+				option(value="" selected)= defval
 				each el in state.response_state.locations
 					option(value=el.id)= el.name
 		if state.ids.location
 			- var rooms = state.response_state.rooms.filter(function(el){return el.location_id.compare(state.ids.location) == 0;})
-			- var defval = "комната"
+			- var defval = "все комнаты"
 			div.btn-group.ml
 				select.selectpicker.form-control(onChange=utils.set_room(state, ["ids","room"]))
-					option(value="" disabled selected)= defval
+					option(value="" selected)= defval
 					each el in rooms
-						option(value=el.id)= el.name
-	else 
+						option(value=el.id style="background-color:"+el.color)= el.name
+	else
 		- var location_id = state.rooms_of_locations[room_id]
 		- var rooms = state.response_state.rooms.filter(function(el){return el.location_id.compare(location_id) == 0;})
 		select.selectpicker.form-control(onChange=utils.view_set(state, ["new_session","room_id"]))
 			each el in rooms
 				if (el.id == room_id)
-					option(value=el.id selected)= el.name
+					option(value=el.id style="background-color:"+el.color selected)= el.name
 				else 
-					option(value=el.id)= el.name
+					option(value=el.id style="background-color:"+el.color)= el.name
 mixin navbar()
 	nav.navbar.navbar-default.navbar-fixed-top.transparent.text-center
 		+select_room_location(false)
 		div.btn-group.ml
 			- var maybe_admin = state.response_state.admins.filter(function(el){return (el.login == state.request_template.login) && (el.password == state.request_template.password);})[0]
-			- var this_admin_name = (maybe_admin ? maybe_admin.name : "anon") 
-			button.btn.btn-info.navbar-btn(data-toggle="tooltip" data-placement="bottom" title="обновить" onClick=utils.CMD_get_state())= this_admin_name
-			button.btn.btn-danger.navbar-btn(data-toggle="tooltip" data-placement="bottom" title="выйти" onClick=utils.logout(state))
+			- var this_admin_name = (maybe_admin ? maybe_admin.name : "anon")
+			span.btn.btn-default.navbar-btn.disabled= this_admin_name
+			button.btn.btn-primary.navbar-btn(data-toggle="tooltip" data-placement="bottom" title="выйти" onClick=utils.logout(state))
 				span.myicon(class="fa fa-sign-out" aria-hidden="true")
 mixin calendar_main()
 	div.container-fluid.mt
 		div.row.text-center
 			div.col-xs-12
 				div(id="calendar")
-mixin select_instruments_ids()
+mixin select_instruments_ids(location_id)
 	select.selectpicker.form-control(multiple onChange=utils.multiple_select(state, ["new_session","instruments_ids"]))
-		each el in state.response_state.instruments
+		each el in state.response_state.instruments.filter(function(el){return el.location_id.toString() == location_id.toString();})
 			if (state.new_session.instruments_ids.filter(function(id){return id.toString() == el.id.toString();}).length == 1)
 				option(value=el.id selected)= el.name
 			else
 				option(value=el.id)= el.name
 mixin session_exists()
-	- var fields = ["id","room_id","instruments_ids","band_id"]
+	- var fields = ["id","room_id","instruments_ids","band_id","callback","status","amount","description"]
 	each k in fields
 		- var transl = state.verbose.session[k]
 		div.col-xs-12.mt.input-group
@@ -76,14 +81,39 @@ mixin session_exists()
 			else if (k == "room_id")
 				+select_room_location(state.new_session.room_id)
 			else if (k == "instruments_ids")
-				+select_instruments_ids()
+				+select_instruments_ids(state.rooms_of_locations[state.new_session.room_id])
 			else if (k == "band_id")
-				//
-				//	TODO
-				//
-				span.form-control= "hello"
+				- var this_band = state.response_state.bands.filter(function(el){return el.id.toString() == state.new_session.band_id.toString();})[0]
+				span.form-control= this_band.name
+			else if (k == "callback")
+				div.btn-default.form-control(onClick=utils.view_swap(state, ["new_session","callback"]))
+					span.myicon(class=(state.new_session.callback ? "fa fa-check" : "fa fa-ban") aria-hidden="true")
+			else if (k == "status")
+				+selectitems(["SS_awaiting_first", "SS_closed_ok", "SS_canceled_soft", "SS_canceled_hard"], ["new_session","status"], state.verbose.session_status)
+			else if (k == "amount")
+				span.form-control= state.new_session.amount.toString()
+			else if (k == "description")
+				input.form-control(type="text" onChange=utils.view_set(state, ["new_session","description"]))
 mixin session_new()
-	span= "TODO"
+	- var fields = ["room_id","instruments_ids","band_id","callback","description"]
+	each k in fields
+		- var transl = state.verbose.session[k]
+		div.col-xs-12.mt.input-group
+			span.input-group-addon= transl
+			if (k == "room_id")
+				+select_room_location(state.ids.room)
+			else if (k == "instruments_ids")
+				+select_instruments_ids(state.ids.location)
+			else if (k == "band_id")
+				select.selectpicker.form-control(onChange=utils.view_set(state, ["new_session","band_id"]))
+					option(value="" selected disabled)= "не выбрана"
+					each el in state.response_state.bands
+						option(value=el.id)= el.name
+			else if (k == "callback")
+				div.btn-default.form-control(onClick=utils.view_swap(state, ["new_session","callback"]))
+					span.myicon(class=(state.new_session.callback ? "fa fa-check" : "fa fa-ban") aria-hidden="true")
+			else if (k == "description")
+				input.form-control(type="text" onChange=utils.view_set(state, ["new_session","description"]))
 mixin workday_popup()
 	if state.workday
 		div.modal.fade(tabIndex="-1" id="calendarday")

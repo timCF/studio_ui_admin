@@ -24,15 +24,15 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			if state.ids.room
 				state.datepairval.time.start = ''
 				state.datepairval.time.end = ''
+				state.new_session = utils.new_session(state)
 				state.workday = false
 				utils.render() # reset popup to reset content
 				state.workday = date
 				utils.render()
-				utils.render() # rerender new popup two times ( somewhere is async shit )
+				utils.render() # rerender new popup some times ( somewhere is async shit )
 				$('#datepair .time.start').timepicker('setTime', '')
 				$('#datepair .time.end').timepicker('setTime', '')
 				$('#datepair .date.start').datepicker('setDate', date.toDate())
-				state.new_session = utils.new_session(state)
 				utils.render()
 				$('#calendarday').modal()
 			else
@@ -44,7 +44,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			utils.render() # reset popup to reset content
 			state.workday = moment(state.new_session.time_from.toString() * 1000)
 			utils.render()
-			utils.render() # rerender new popup two times ( somewhere is async shit )
+			utils.render() # rerender new popup some times ( somewhere is async shit )
 			ds = moment(state.new_session.time_from.toString() * 1000).toDate()
 			de = moment(state.new_session.time_to.toString() * 1000).toDate()
 			$('#datepair .date.start').datepicker('setDate', ds)

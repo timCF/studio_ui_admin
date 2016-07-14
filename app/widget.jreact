@@ -24,7 +24,6 @@ mixin auth
 			button.btn.btn-primary.fill.submitmegaform(type="submit" data-toggle="tooltip" data-placement="bottom" title="войти" onClick=utils.CMD_get_state())
 				span.myicon(class="fa fa-sign-in" aria-hidden="true")
 mixin select_room_location(room_id)
-	// - var color = (state.ids.room ? "background-color:"+state.response_state.rooms.filter(function(el){return el.id.toString() == state.ids.room.toString();})[0].color : "")
 	if !room_id
 		div.btn-group.ml
 			- var defval = "все базы"
@@ -55,7 +54,8 @@ mixin navbar()
 		div.btn-group.ml
 			- var maybe_admin = state.response_state.admins.filter(function(el){return (el.login == state.request_template.login) && (el.password == state.request_template.password);})[0]
 			- var this_admin_name = (maybe_admin ? maybe_admin.name : "anon")
-			span.btn.btn-default.navbar-btn.disabled= this_admin_name
+			- var color = (state.ids.room ? "background-color:"+state.response_state.rooms.filter(function(el){return el.id.toString() == state.ids.room.toString();})[0].color : "")
+			span.btn.btn-default.navbar-btn.bold(style=color)= this_admin_name
 			button.btn.btn-primary.navbar-btn(data-toggle="tooltip" data-placement="bottom" title="выйти" onClick=utils.logout(state))
 				span.myicon(class="fa fa-sign-out" aria-hidden="true")
 mixin calendar_main()

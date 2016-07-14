@@ -24,11 +24,13 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			if state.ids.room
 				state.datepairval.time.start = ''
 				state.datepairval.time.end = ''
+				state.workday = false
+				utils.render() # reset popup to reset content
+				state.workday = date
+				utils.render()
+				utils.render() # rerender new popup two times ( somewhere is async shit )
 				$('#datepair .time.start').timepicker('setTime', '')
 				$('#datepair .time.end').timepicker('setTime', '')
-				state.workday = false
-				utils.render() # rerender to reset popup content
-				state.workday = date
 				$('#datepair .date.start').datepicker('setDate', date.toDate())
 				state.new_session = utils.new_session(state)
 				utils.render()
@@ -37,10 +39,12 @@ document.addEventListener "DOMContentLoaded", (e) ->
 				utils.error("не выбрана комната")),
 		eventAfterRender: ((data, element, _) -> $(element).css('width', ($(element).width() * data.percentfill) + 'px'))
 		eventClick: (({id: id}, _, __) ->
-			state.new_session = utils.clone_proto(state.response_state.sessions.filter(({id: this_id}) -> this_id == id)[0], "Session")
+			state.new_session = utils.clone_proto(state.response_state.sessions.filter(({id: this_id}) -> this_id.compare(id) == 0)[0], "Session")
 			state.workday = false
-			utils.render() # rerender to reset popup content
+			utils.render() # reset popup to reset content
 			state.workday = moment(state.new_session.time_from.toString() * 1000)
+			utils.render()
+			utils.render() # rerender new popup two times ( somewhere is async shit )
 			ds = moment(state.new_session.time_from.toString() * 1000).toDate()
 			de = moment(state.new_session.time_to.toString() * 1000).toDate()
 			$('#datepair .date.start').datepicker('setDate', ds)

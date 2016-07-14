@@ -1,6 +1,6 @@
 module.exports = {
 		session: {
-			id: "№",
+			id: "заказ №",
 			time_from: "начало",
 			time_to: "конец",
 			week_day: "день недели",

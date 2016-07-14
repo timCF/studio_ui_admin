@@ -36,7 +36,7 @@ module.exports = (utils, state) ->
 			setTimeout((() -> utils.rerender_events_coroutine(newstate)), 500)
 		else
 			setTimeout((() -> utils.rerender_events_coroutine(prevstate)), 500)
-	port = ':7770' # (if location.port then ":"+location.port else "")
+	port = if location.port then ":"+location.port else ""
 	bullet = $.bullet((if window.location.protocol == "https:" then "wss://" else "ws://") + location.hostname + port + location.pathname + "bullet")
 	utils.bullet = bullet
 	utils.to_server = (data) ->

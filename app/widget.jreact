@@ -77,16 +77,21 @@ mixin workday_popup()
 									input.form-control.date.end(type="text" placeholder="дата окончания")
 							if state.new_session
 								div.row.text-center
-									div.col-xs-12.form-inline
 										each transl, k in state.verbose.session
 											if (k == "room_id")
-												div.mt.input-group
+												div.col-xs-12.mt.input-group
 													span.input-group-addon= transl
 													+select_room_location(state.new_session.room_id)
 											else if (k == "instruments_ids")
-												//
-												//	TODO
-												//
+												div.col-xs-12.mt.input-group
+													span.input-group-addon= transl
+													select.form-control.selectpicker(multiple onChange=utils.multiple_select(state, ["new_session","instruments_ids"]))
+														each el in state.response_state.instruments
+															if (state.new_session.instruments_ids.filter(function(id){return id.toString() == el.id.toString();}).length == 1)
+																option(value=el.id selected)= el.name
+															else
+																option(value=el.id)= el.name
+													
 					div.modal-footer
 						button.btn.btn-default(data-dismiss="modal") закрыть
 						button.btn.btn-primary сохранить

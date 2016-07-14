@@ -26,6 +26,8 @@ document.addEventListener "DOMContentLoaded", (e) ->
 				state.datepairval.time.end = ''
 				$('#datepair .time.start').timepicker('setTime', '')
 				$('#datepair .time.end').timepicker('setTime', '')
+				state.workday = false
+				utils.render() # rerender to reset popup content
 				state.workday = date
 				$('#datepair .date.start').datepicker('setDate', date.toDate())
 				state.new_session = utils.new_session(state)
@@ -36,6 +38,8 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		eventAfterRender: ((data, element, _) -> $(element).css('width', ($(element).width() * data.percentfill) + 'px'))
 		eventClick: (({id: id}, _, __) ->
 			state.new_session = utils.clone_proto(state.response_state.sessions.filter(({id: this_id}) -> this_id == id)[0], "Session")
+			state.workday = false
+			utils.render() # rerender to reset popup content
 			state.workday = moment(state.new_session.time_from.toString() * 1000)
 			ds = moment(state.new_session.time_from.toString() * 1000).toDate()
 			de = moment(state.new_session.time_to.toString() * 1000).toDate()
@@ -126,6 +130,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			console.log("render calendar")
 	render_tooltips = () ->
 		$('[data-toggle="tooltip"]').tooltip()
+		$('.selectpicker').selectpicker({noneSelectedText: "ничего не выбрано"})
 		out = $(".tooltip").attr('id')
 		if out and ($("[aria-describedby='"+out+"']").length == 0)
 			$( document.getElementById(out) ).remove()

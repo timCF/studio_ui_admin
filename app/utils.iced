@@ -1,4 +1,5 @@
 proto2base64 = require('base64-arraybuffer')
+jf = require("jsfunky")
 module.exports =
 	error: (mess) -> $.growl.error({title: '', message: mess , duration: 20000})
 	warn: (mess) -> $.growl.warning({title: '', message: mess , duration: 20000})
@@ -56,3 +57,6 @@ module.exports =
 	clone_proto: (data, datatype) ->
 		utils = @
 		utils.stringifyEnums(utils.proto[datatype].decode(utils.proto[datatype].encode(data)))
+	multiple_select: (state, path, ev) ->
+		if (ev? and ev.target?)
+			jf.put_in(state, path, [].slice.call(ev.target.options).filter((el) -> el.selected).map((el) -> el.value))

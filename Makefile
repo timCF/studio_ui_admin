@@ -5,3 +5,5 @@ rebuild:
 	rm -rf ./bower_components
 	npm install
 	bower install --allow-root
+	brunch b
+	brunch b

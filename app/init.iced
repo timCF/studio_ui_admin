@@ -34,7 +34,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 				$('#datepair .time.end').timepicker('setTime', '')
 				$('#datepair .date.start').datepicker('setDate', date.toDate())
 				utils.render()
-				$('#calendarday').jqm().jqmShow()
+				$('#calendarday').modal()
 			else
 				utils.error("не выбрана комната")),
 		eventAfterRender: ((data, element, _) -> $(element).css('width', ($(element).width() * data.percentfill) + 'px'))
@@ -53,7 +53,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			$('#datepair .time.end').timepicker('setTime', de)
 			utils.render()
 			new_datepairval()
-			$('#calendarday').jqm().jqmShow())
+			$('#calendarday').modal())
 	}
 	# state for main function, mutable
 	state = {

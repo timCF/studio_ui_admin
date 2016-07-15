@@ -31,8 +31,6 @@
     "bulletjs": "*",
     "moment": "^2.14.1",
     "bootstrap-select": "^1.10.0",
-    "toastr": "^2.1.2",
-    "jqmodal": "timCF/jqModal#9c4d4d0cce3d35e9269e74a8068fea6779ed09c4",
-    "animate.css": "^3.5.2"
+    "toastr": "^2.1.2"
   }
 }

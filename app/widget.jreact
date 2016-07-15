@@ -117,30 +117,25 @@ mixin session_new()
 				input.form-control(type="text" onChange=utils.view_set(state, ["new_session","description"]))
 mixin workday_popup()
 	if state.workday
-		div.modal.fade(tabIndex="-1" id="calendarday")
-			div.modal-dialog.modal-lg
-				div.modal-content
-					div.modal-header
-						button.close(data-dismiss="modal")
-							span &times;
-						h4.modal-title= state.workday.locale('ru').format('dddd Do MMMM YYYY')
-					div.modal-body
-						div.container-fluid
+		div.modal-dialog.modal-lg.jqmWindow.animated.flipInX(id="calendarday")
+			div.modal-content
+				div.modal-body
+					div.container-fluid
+						div.row.text-center
+							div.col-xs-12.form-inline(id="datepair")
+								input.form-control.date.start(type="text" placeholder="дата начала")
+								input.form-control.time.start(type="text" placeholder="время начала")
+								input.form-control.time.end(type="text" placeholder="время окончания")
+								input.form-control.date.end(type="text" placeholder="дата окончания")
+						if state.new_session
 							div.row.text-center
-								div.col-xs-12.form-inline(id="datepair")
-									input.form-control.date.start(type="text" placeholder="дата начала")
-									input.form-control.time.start(type="text" placeholder="время начала")
-									input.form-control.time.end(type="text" placeholder="время окончания")
-									input.form-control.date.end(type="text" placeholder="дата окончания")
-							if state.new_session
-								div.row.text-center
-									if state.new_session.id
-										+session_exists()
-									else
-										+session_new()
-					div.modal-footer
-						button.btn.btn-default(data-dismiss="modal") закрыть
-						button.btn.btn-primary сохранить
+								if state.new_session.id
+									+session_exists()
+								else
+									+session_new()
+				div.modal-footer
+					button.btn.btn-default(data-dismiss="modal") закрыть
+					button.btn.btn-primary сохранить
 //
 //	PAGE CONTENT
 //

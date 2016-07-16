@@ -1,7 +1,8 @@
 document.addEventListener "DOMContentLoaded", (e) ->
 	jf = require("jsfunky")
 	timepicker_opts = {
-		minTime: "9:00"
+		minTime: "9:00",
+		maxTime: "23.45",
 		timeFormat: 'H:i',
 		disableTextInput: true,
 		disableTouchKeyboard: true,
@@ -117,14 +118,24 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		state.datepairval.date.end = $('#datepair .date.end').datepicker('getDate')
 		state.datepairval.time.start = $('#datepair .time.start').timepicker('getTime')
 		state.datepairval.time.end = $('#datepair .time.end').timepicker('getTime')
+		if (state.datepairval.date.start and state.datepairval.time.start and state.datepairval.time.end)
+			date = utils.clonedate(state.datepairval.date.start)
+			switch state.datepairval.time.start <= state.datepairval.time.end
+				when true then state.datepairval.date.end = date
+				when false
+					date.setDate(date.getDate() + 1)
+					state.datepairval.date.end = date
+			$('#datepair .date.end').datepicker('setDate', date)
 	render_datepair = () ->
 		datepair = document.getElementById('datepair')
 		if not(datepair) then (state.datepair = false)
 		if not(state.datepair) and datepair
 			$('#datepair .time').timepicker(timepicker_opts)
 			$('#datepair .date').datepicker(datepicker_opts)
-			state.datepair = new Datepair(datepair, {defaultTimeDelta: 10800000})
+			state.datepair = new Datepair(datepair, {defaultTimeDelta: 10800000, defaultDateDelta: null})
 			$('#datepair').on('rangeSelected', new_datepairval)
+			$('#datepair').on('rangeError', new_datepairval)
+			$('#datepair').on('rangeIncomplete', new_datepairval)
 			console.log("render datepair")
 	render_calendar = () ->
 		calendar = document.getElementById('calendar')

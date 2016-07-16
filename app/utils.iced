@@ -65,3 +65,37 @@ module.exports =
 	multiple_select: (state, path, ev) ->
 		if (ev? and ev.target?)
 			jf.put_in(state, path, [].slice.call(ev.target.options).filter((el) -> el.selected).map((el) -> el.value))
+	session_new_edit: (state) ->
+		# change / close old session
+		utils = @
+		if state.datepairval.date.start and state.datepairval.date.end and state.datepairval.time.start and state.datepairval.time.end
+			msg = utils.newmsg()
+			{time_from: tf, time_to: tt} = utils.get_time_from_to(state)
+			d1 = new Date()
+			d2 = new Date()
+			d1.setTime(tf)
+			d2.setTime(tt)
+			console.log(d1,d2)
+			#
+			#	TODO
+			#
+			if state.new_session.id
+				state.new_session.admin_id_close = state.ids.admin
+			else # new session
+				state.new_session.admin_id_open = state.ids.admin
+		else
+			utils.error("не выбран временной интервал сессии")
+	date2moment: (date) ->
+		moment(date.getTime())
+	get_time_from_to: (state) ->
+		utils = @
+		pd = "YYYY-MM-DD"
+		pt = "HH:mm:ss"
+		{
+			time_from: (moment( (utils.date2moment(state.datepairval.date.start).format(pd)+utils.date2moment(state.datepairval.time.start).format(pt)) , pd+pt ).unix() * 1000),
+			time_to: (moment( (utils.date2moment(state.datepairval.date.end).format(pd)+utils.date2moment(state.datepairval.time.end).format(pt)) , pd+pt ).unix() * 1000)
+		}
+	clonedate: (date) ->
+		newdate = new Date()
+		newdate.setTime(date.getTime())
+		newdate

@@ -39,6 +39,7 @@ module.exports = (utils, state) ->
 	port = if location.port then ":"+location.port else ""
 	bullet = $.bullet((if window.location.protocol == "https:" then "wss://" else "ws://") + location.hostname + port + location.pathname + "bullet")
 	utils.bullet = bullet
+	utils.newmsg = newmsg
 	utils.to_server = (data) ->
 		console.log(data)
 		bullet.send( utils.encode_proto(data) )

@@ -68,23 +68,23 @@ module.exports =
 	session_new_edit: (state) ->
 		# change / close old session
 		utils = @
-		if state.datepairval.date.start and state.datepairval.date.end and state.datepairval.time.start and state.datepairval.time.end
-			msg = utils.newmsg()
-			{time_from: tf, time_to: tt} = utils.get_time_from_to(state)
-			d1 = new Date()
-			d2 = new Date()
-			d1.setTime(tf)
-			d2.setTime(tt)
-			console.log(d1,d2)
-			#
-			#	TODO
-			#
-			if state.new_session.id
-				state.new_session.admin_id_close = state.ids.admin
-			else # new session
-				state.new_session.admin_id_open = state.ids.admin
-		else
+		if not(state.datepairval.date.start and state.datepairval.date.end and state.datepairval.time.start and state.datepairval.time.end)
 			utils.error("не выбран временной интервал сессии")
+		else if not(state.new_session.band_id)
+			utils.error("не выбрана группа")
+		else
+			msg = utils.newmsg()
+			session = Object.assign(state.new_session, utils.get_time_from_to(state))
+			wd = (date = new Date() ; date.setTime(session.time_from) ; date).getDay()
+			if (wd == 0) then (session.week_day = "WD_7") else (session.week_day = "WD_"+wd)
+			if state.new_session.id
+				msg.cmd = 'CMD_edit_session'
+				session.admin_id_close = state.ids.admin
+			else # new session
+				msg.cmd = 'CMD_new_session'
+				session.admin_id_open = state.ids.admin
+			msg.subject.sessions = [session]
+			utils.to_server(msg)
 	date2moment: (date) ->
 		moment(date.getTime())
 	get_time_from_to: (state) ->

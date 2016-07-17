@@ -2,7 +2,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	jf = require("jsfunky")
 	timepicker_opts = {
 		minTime: "9:00",
-		maxTime: "23.45",
+		#maxTime: "23.45",
 		timeFormat: 'H:i',
 		disableTextInput: true,
 		disableTouchKeyboard: true,
@@ -120,7 +120,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		state.datepairval.time.end = $('#datepair .time.end').timepicker('getTime')
 		if (state.datepairval.date.start and state.datepairval.time.start and state.datepairval.time.end)
 			date = utils.clonedate(state.datepairval.date.start)
-			switch state.datepairval.time.start <= state.datepairval.time.end
+			switch (state.datepairval.time.start <= state.datepairval.time.end) and not((state.datepairval.time.end.getMinutes() == 0) and (state.datepairval.time.end.getHours() == 0))
 				when true then state.datepairval.date.end = date
 				when false
 					date.setDate(date.getDate() + 1)

@@ -10,12 +10,14 @@ module.exports = (utils, state) ->
 	create_event = ({id: id, time_from: time_from, time_to: time_to, room_id: room_id, status: status}) ->
 		m_from = moment(time_from * 1000)
 		m_to = moment(time_to * 1000)
+		percentfill = Math.abs(time_to - time_from) / 10800
+		percentfill = if (percentfill > 1) then 1 else percentfill
 		{
 			id: id,
 			title: m_from.format('HH:mm')+" - "+m_to.format('HH:mm'),
 			start: m_from.format('YYYY-MM-DD'),
 			end: m_to.format('YYYY-MM-DD'),
-			percentfill: (time_to - time_from) / 10800,
+			percentfill: percentfill,
 			room_id: room_id,
 			color: state.colors.sesions[status]
 		}

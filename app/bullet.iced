@@ -38,7 +38,8 @@ module.exports = (utils, state) ->
 			setTimeout((() -> utils.rerender_events_coroutine(newstate)), 500)
 		else
 			setTimeout((() -> utils.rerender_events_coroutine(prevstate)), 500)
-	port = ":7772"#if location.port then ":"+location.port else ""
+	# ":7772"
+	port = if location.port then ":"+location.port else ""
 	bullet = $.bullet((if window.location.protocol == "https:" then "wss://" else "ws://") + location.hostname + port + location.pathname + "bullet")
 	utils.bullet = bullet
 	utils.newmsg = newmsg
@@ -64,7 +65,9 @@ module.exports = (utils, state) ->
 		switch data.status
 			when "RS_ok_void" then "ok"
 			when "RS_error" then utils.error(data.message)
-			when "RS_notice" then utils.notice(data.message)
+			when "RS_notice"
+				$('#calendarday').modal('hide')
+				utils.notice(data.message)
 			when "RS_refresh" then (if state.response_state then utils.CMD_get_state())
 			when "RS_ok_state"
 				store.set("login", state.request_template.login)

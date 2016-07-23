@@ -27,19 +27,23 @@ module.exports = (utils, state) ->
 	utils.rerender_events_coroutine = (prevstate) ->
 		# rm html elements and create new state ...
 		newstate = jf.reduce(state, {}, (k,v,acc) -> (if (k in ["workday","datepair","calendar","datepairval"]) then acc else jf.put_in(acc, [k], jf.clone(v))))
-		if (state.calendar and not(jf.equal(prevstate, newstate)))
-			$(state.calendar).fullCalendar('removeEvents')
-			state.events.forEach((el) ->
-				room_pred = ((el.room_id.toString() == state.ids.room.toString()) or ((state.ids.room == false) and (state.ids.location == false)))
-				location_pred = ((state.ids.room == false) and ((state.rooms_of_locations[el.room_id.toString()] == state.ids.location.toString()) or (state.ids.location == false)))
-				if (room_pred or location_pred) then $(state.calendar).fullCalendar( 'renderEvent', el, true ))
+		newstate.state_calendar_flag = not(state.calendar)
+		if not(jf.equal(prevstate, newstate))
+			state.rnd = Math.random().toString()
+			newstate.rnd = state.rnd
+			if state.calendar
+				$(state.calendar).fullCalendar('removeEvents')
+				state.events.forEach((el) ->
+					room_pred = ((el.room_id.toString() == state.ids.room.toString()) or ((state.ids.room == false) and (state.ids.location == false)))
+					location_pred = ((state.ids.room == false) and ((state.rooms_of_locations[el.room_id.toString()] == state.ids.location.toString()) or (state.ids.location == false)))
+					if (room_pred or location_pred) then $(state.calendar).fullCalendar( 'renderEvent', el, true ))
 			console.log("re-render events ... new state is")
 			console.log(state)
 			setTimeout((() -> utils.rerender_events_coroutine(newstate)), 500)
 		else
 			setTimeout((() -> utils.rerender_events_coroutine(prevstate)), 500)
-	# ":7772"
-	port = if location.port then ":"+location.port else ""
+	port = ":7772"
+	#port = if location.port then ":"+location.port else ""
 	bullet = $.bullet((if window.location.protocol == "https:" then "wss://" else "ws://") + location.hostname + port + location.pathname + "bullet")
 	utils.bullet = bullet
 	utils.newmsg = newmsg

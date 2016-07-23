@@ -27,16 +27,18 @@ mixin select_room_location(room_id)
 	if !room_id
 		div.btn-group.ml.mt
 			- var defval = "все базы"
-			select.selectpicker.form-control(onChange=utils.set_location(state))
-				option(value="" selected)= defval
+			- var title = (state.ids.location ? state.response_state.locations.filter(function(el){return el.id.compare(state.ids.location) == 0;})[0].name : defval)
+			select.selectpicker.form-control(onChange=utils.set_location(state) title=title)
+				option(value="")= defval
 				each el in state.response_state.locations
 					option(value=el.id)= el.name
 		if state.ids.location
 			- var rooms = state.response_state.rooms.filter(function(el){return el.location_id.compare(state.ids.location) == 0;})
 			- var defval = "все комнаты"
+			- var title = (state.ids.room ? rooms.filter(function(el){return el.id.compare(state.ids.room) == 0;})[0].name : defval)
 			div.btn-group.ml.mt
-				select.selectpicker.form-control(onChange=utils.set_room(state, ["ids","room"]))
-					option(value="" selected)= defval
+				select.selectpicker.form-control(onChange=utils.set_room(state, ["ids","room"]) title=title)
+					option(value="")= defval
 					each el in rooms
 						option(value=el.id style="backgroundColor:"+el.color)= el.name
 	else
@@ -51,6 +53,11 @@ mixin select_room_location(room_id)
 mixin navbar()
 	div.container-fluid
 		div.row.text-center
+			div.btn-group.ml.mt(key=state.rnd)
+				each el in state.pages_list
+					if (el.key != state.current_page)
+						button.btn.btn-info(key=el.key+state.rnd data-toggle="tooltip" data-placement="bottom" title=el.tt onClick=utils.view_put(state, ["current_page"], el.key))
+							span.myicon(class="fa "+el.icon aria-hidden="true")
 			+select_room_location(false)
 			div.btn-group.ml.mt
 				- var maybe_admin = state.response_state.admins.filter(function(el){return (el.login == state.request_template.login) && (el.password == state.request_template.password);})[0]

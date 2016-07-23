@@ -58,6 +58,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	}
 	# state for main function, mutable
 	state = {
+		rnd: Math.random().toString(),
 		colors: {
 			sesions: {
 				SS_awaiting_last:"#c1f0f0",
@@ -73,7 +74,12 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			height: 0
 		},
 		rooms_of_locations: {}, # just dict room_id => location_id
-		current_page: "calendar_main"
+		pages_list: [
+			{key: "calendar_main", icon: "fa-calendar", tt: "календарь", style: "color4"},
+			{key: "edit_groups", icon: "fa-users", tt: "группы", style: "color5"},
+			{key: "edit_instruments", icon: "fa-music", tt: "инструменты", style: "color6"},
+		],
+		current_page: "calendar_main",
 		events: [], # calendar events to render
 		opts: {},
 		data: {},

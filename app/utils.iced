@@ -7,6 +7,10 @@ module.exports =
 	info: (mess) -> toastr.info(mess)
 	view_get: (state, path) -> jf.get_in(state, path)
 	view_put: (state, path, data) -> Imuta.update_in(state, path, (_) -> data)
+	view_put_render: (state, path, data) ->
+		utils = @
+		Imuta.update_in(state, path, (_) -> data)
+		utils.render()
 	view_set: (state, path, ev) ->
 		if (ev? and ev.target? and ev.target.value?)
 			subj = ev.target.value
@@ -85,6 +89,10 @@ module.exports =
 				session.admin_id_open = state.ids.admin
 			msg.subject.sessions = [session]
 			utils.to_server(msg)
+	band_new_edit: (state) ->
+		#
+		#	TODO
+		#
 	date2moment: (date) ->
 		moment(date.getTime())
 	get_time_from_to: (state) ->
@@ -99,3 +107,30 @@ module.exports =
 		newdate = new Date()
 		newdate.setTime(date.getTime())
 		newdate
+	edit_band: (state, el) ->
+		utils = @
+		this_band = utils.clone_proto(el, "Band")
+		state.new_band = false
+		utils.render()
+		state.new_band = this_band
+		setTimeout((() -> utils.render() ; $('#group_popup').modal()), 100)
+	new_band: (state) ->
+		utils = @
+		band = new utils.proto.Band
+		band.id = null
+		band.name = ""
+		band.person = ""
+		contacts = new utils.proto.Contacts
+		contacts.phones = []
+		contacts.mails = []
+		contacts.social = []
+		contacts.other = []
+		band.contacts = contacts
+		band.kind = "BK_base"
+		band.description = ""
+		band.balance = 0
+		band.admin_id = state.ids.admin
+		band.can_order = false
+		band.enabled = true
+		band
+	check_phone: (str) -> not(not(str.match(/\+\d\d\d\d\d\d\d\d\d\d\d/)))

@@ -6,7 +6,7 @@ mixin swapbutton(name, path, style)
 	else
 		button.btn.btn-default(class=style onClick=utils.view_swap(state, path))= name
 mixin selectitems(list, path, dict)
-	select.selectpicker.form-control(onChange=utils.view_set(state, path))
+	select.selectpicker.form-control(onChange=utils.view_set(state, path) data-live-search="true")
 		- var currentval = utils.view_get(state, path)
 		each el in list
 			if (el == currentval)
@@ -28,7 +28,7 @@ mixin select_room_location(room_id)
 		div.btn-group.ml.mt
 			- var defval = "все базы"
 			- var title = (state.ids.location ? state.response_state.locations.filter(function(el){return el.id.compare(state.ids.location) == 0;})[0].name : defval)
-			select.selectpicker.form-control(onChange=utils.set_location(state) title=title)
+			select.selectpicker.form-control(onChange=utils.set_location(state) title=title data-live-search="true")
 				option(value="")= defval
 				each el in state.response_state.locations
 					option(value=el.id)= el.name
@@ -37,14 +37,14 @@ mixin select_room_location(room_id)
 			- var defval = "все комнаты"
 			- var title = (state.ids.room ? rooms.filter(function(el){return el.id.compare(state.ids.room) == 0;})[0].name : defval)
 			div.btn-group.ml.mt
-				select.selectpicker.form-control(onChange=utils.set_room(state, ["ids","room"]) title=title)
+				select.selectpicker.form-control(onChange=utils.set_room(state, ["ids","room"]) title=title data-live-search="true")
 					option(value="")= defval
 					each el in rooms
 						option(value=el.id style="backgroundColor:"+el.color)= el.name
 	else
 		- var location_id = state.rooms_of_locations[room_id]
 		- var rooms = state.response_state.rooms.filter(function(el){return el.location_id.compare(location_id) == 0;})
-		select.selectpicker.form-control(onChange=utils.view_set(state, ["new_session","room_id"]))
+		select.selectpicker.form-control(onChange=utils.view_set(state, ["new_session","room_id"]) data-live-search="true")
 			each el in rooms
 				if (el.id == room_id)
 					option(value=el.id style="backgroundColor:"+el.color selected)= el.name
@@ -56,9 +56,13 @@ mixin navbar()
 			div.btn-group.ml.mt(key=state.rnd)
 				each el in state.pages_list
 					if (el.key != state.current_page)
-						button.btn.btn-info(key=el.key+state.rnd data-toggle="tooltip" data-placement="bottom" title=el.tt onClick=utils.view_put(state, ["current_page"], el.key))
+						button.btn.btn-info(key=el.key+state.rnd data-toggle="tooltip" data-placement="bottom" title=el.tt onClick=utils.view_put_render(state, ["current_page"], el.key))
 							span.myicon(class="fa "+el.icon aria-hidden="true")
-			+select_room_location(false)
+			if (state.current_page != "edit_groups")
+				+select_room_location(false)
+			if (state.current_page == "edit_groups")
+				button.btn.btn-danger.color2.ml.mt(data-toggle="tooltip" data-placement="bottom" title="добавить" onClick=utils.edit_band(state, utils.new_band(state)))
+					span.myicon(class="fa fa-plus-square" aria-hidden="true")
 			div.btn-group.ml.mt
 				- var maybe_admin = state.response_state.admins.filter(function(el){return (el.login == state.request_template.login) && (el.password == state.request_template.password);})[0]
 				- var this_admin_name = (maybe_admin ? maybe_admin.name : "anon")
@@ -72,7 +76,7 @@ mixin calendar_main()
 			div.col-xs-12
 				div(id="calendar")
 mixin select_instruments_ids(location_id)
-	select.selectpicker.form-control(multiple onChange=utils.multiple_select(state, ["new_session","instruments_ids"]))
+	select.selectpicker.form-control(multiple onChange=utils.multiple_select(state, ["new_session","instruments_ids"]) data-live-search="true")
 		each el in state.response_state.instruments.filter(function(el){return el.location_id.toString() == location_id.toString();})
 			if (state.new_session.instruments_ids.filter(function(id){return id.toString() == el.id.toString();}).length == 1)
 				option(value=el.id selected)= el.name
@@ -113,7 +117,7 @@ mixin session_new()
 			else if (k == "instruments_ids")
 				+select_instruments_ids(state.ids.location)
 			else if (k == "band_id")
-				select.selectpicker.form-control(onChange=utils.view_set(state, ["new_session","band_id"]))
+				select.selectpicker.form-control(onChange=utils.view_set(state, ["new_session","band_id"]) data-live-search="true")
 					option(value="" selected disabled)= "не выбрана"
 					each el in state.response_state.bands
 						option(value=el.id)= el.name
@@ -148,6 +152,78 @@ mixin workday_popup()
 					div.modal-footer
 						button.btn.btn-default(data-dismiss="modal") закрыть
 						button.btn.btn-primary(onClick=utils.session_new_edit(state)) сохранить
+mixin groups_table()
+	if state.response_state && (state.response_state.bands.length > 0)
+		- var lst = state.response_state.bands
+		- var keys = state.groups_header
+		div.container-fluid.mt
+			div.row
+				div.col-xs-12
+					table.table-special-sorted
+						thead
+							tr
+								each k in keys
+									th.text-center= k.transl
+						tbody
+							each el in lst
+								tr(onClick=utils.edit_band(state, el))
+									each k in keys
+										if (k.key == "contacts")
+											td.text-center 
+												each sk in Object.keys(el[k.key])
+													- var arr = el[k.key][sk]
+													each str in arr
+														span= str
+														br
+										else if (k.key == "kind")
+											td.text-center= state.verbose.band_kind[el[k.key]]
+										else if (k.key == "can_order")
+											td.text-center= (el[k.key] ? "да" : "нет")
+										else
+											td.text-center= el[k.key].toString()
+mixin group_popup()
+	div.modal.fade(tabIndex="-1" id="group_popup")
+		div.modal-dialog.modal-lg
+			div.modal-content
+				div.modal-body
+					div.container-fluid
+						div.row.text-center
+							if state.new_band
+								- var band = state.new_band
+								- var headers = state.groups_header.filter(function(el){return (el.key != "balance") && (el.key != "contacts");})
+								each k in headers
+									- var this_path = ["new_band", k.key]
+									div.col-xs-12.mt.input-group
+										span.input-group-addon= k.transl
+										if (k.key == "name") && band.id
+											span.form-control= band.name
+										else if (k.key == "name")
+											input.form-control(placeholder="имя группы" type="text" onChange=utils.view_set(state, this_path))
+										else if (k.key == "person") && band.id
+											span.form-control= band.person
+										else if (k.key == "person")
+											input.form-control(placeholder="имя лица" type="text" onChange=utils.view_set(state, this_path))
+										else if (k.key == "kind")
+											- var kind = Imuta.get_in(state, this_path)
+											- var title = (kind ? state.verbose.band_kind[kind] : "не выбрано")
+											select.selectpicker.form-control(onChange=utils.view_set(state, this_path) title=title)
+												each bk in ["BK_base","BK_cover","BK_education"]
+													option(value=bk)= state.verbose.band_kind[bk]
+										else if (k.key == "description")
+											input.form-control(placeholder="" type="text" onChange=utils.view_set(state, this_path))
+										else if (k.key == "can_order")
+											div.btn-default.form-control(onClick=utils.view_swap(state, this_path))
+												span.myicon(class=(Imuta.get_in(state, this_path) ? "fa fa-check" : "fa fa-ban") aria-hidden="true")
+								div.col-xs-12.mt.input-group
+									span.form-control.btn.disabled= "контакты"
+								each k in Object.keys(state.new_band.contacts)
+									- var placeholder = ((k == "phones") ? "+7xxxxxxxxxx" : "")
+									div.col-xs-12.mt.input-group.text-left
+										span.input-group-addon= state.verbose.contacts[k]
+										input.form-control(id="contacts-list-"+k type="text" data-role="tagsinput" defaultValue=state.new_band.contacts[k].join(",") placeholder=placeholder)
+				div.modal-footer
+					button.btn.btn-default(data-dismiss="modal") закрыть
+					button.btn.btn-primary(onClick=utils.band_new_edit(state)) сохранить
 //
 //	PAGE CONTENT
 //
@@ -156,5 +232,8 @@ if state.response_state
 	if state.current_page == "calendar_main"
 		+calendar_main()
 		+workday_popup()
+	else if (state.current_page == "edit_groups")
+		+groups_table()
+		+group_popup()
 else
 	+auth

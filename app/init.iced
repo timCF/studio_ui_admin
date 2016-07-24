@@ -58,6 +58,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	}
 	# state for main function, mutable
 	state = {
+		mutex: false,
 		rnd: Math.random().toString(),
 		colors: {
 			sesions: {
@@ -77,7 +78,16 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		pages_list: [
 			{key: "calendar_main", icon: "fa-calendar", tt: "календарь", style: "color4"},
 			{key: "edit_groups", icon: "fa-users", tt: "группы", style: "color5"},
-			{key: "edit_instruments", icon: "fa-music", tt: "инструменты", style: "color6"},
+			{key: "week_template", icon: "fa-database", tt: "постоянка", style: "color6"},
+		],
+		groups_header: [
+			{key: "name", transl: "группа"},
+			{key: "person", transl: "лицо"},
+			{key: "contacts", transl: "контакты"},
+			{key: "kind", transl: "тип"},
+			{key: "description", transl: "комментарий"},
+			{key: "balance", transl: "баланс"},
+			{key: "can_order", transl: "разрешено заказывать"},
 		],
 		current_page: "calendar_main",
 		events: [], # calendar events to render
@@ -99,6 +109,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			time: {start: '', end: ''}
 		},
 		new_session: null,
+		new_band: null,
 		verbose: require("verbose")
 	}
 	render = () ->
@@ -108,6 +119,8 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		render_calendar()
 		render_tooltips()
 		render_jqcb()
+		render_tables()
+		render_taglists()
 		react.render(widget(fullstate), document.getElementById("main_frame"))
 	render_coroutine = () ->
 		render()
@@ -159,4 +172,12 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	render_jqcb = () ->
 		# NOTICE !!! not reload page on submit forms
 		$('form').submit((e) -> e.preventDefault())
+	render_taglists = () ->
+		Object.keys(state.verbose.contacts).forEach((k) ->
+			if document.getElementById('contacts-list-'+k)
+				id = '#contacts-list-'+k
+				$(id).tagsinput({trimValue: true})
+				if (k == "phones")
+					$(id).on('beforeItemAdd', (e) -> if not(utils.check_phone(e.item)) then e.cancel = true))
+	render_tables = require("tablesorter")
 	require("main")(state, utils)

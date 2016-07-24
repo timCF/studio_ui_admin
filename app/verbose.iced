@@ -24,5 +24,17 @@ module.exports = {
 			SS_closed_ok: "закончено",
 			SS_canceled_soft: "мягкая отмена",
 			SS_canceled_hard: "жёсткая отмена"
+		},
+		band_kind: {
+			BK_default: "любая",
+			BK_base: "обычная",
+			BK_cover: "кавер",
+			BK_education: "обучение"
+		},
+		contacts: {
+			phones: "телефоны",
+			mails: "почты",
+			social: "соц.сети",
+			other: "другие"
 		}
 	}

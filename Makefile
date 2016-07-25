@@ -6,4 +6,4 @@ rebuild:
 	npm install
 	bower install --allow-root
 	brunch b
-	brunch b
+	brunch b --production

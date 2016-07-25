@@ -150,8 +150,11 @@ mixin workday_popup()
 									else
 										+session_new()
 					div.modal-footer
-						button.btn.btn-default(data-dismiss="modal") закрыть
-						button.btn.btn-primary(onClick=utils.session_new_edit(state)) сохранить
+						div.text-center
+							button.btn.btn-warning.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="закрыть" data-dismiss="modal")
+								span.myicon(class="fa fa-times" aria-hidden="true")
+							button.btn.btn-primary.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="сохранить" onClick=utils.session_new_edit(state))
+								span.myicon(class="fa fa-floppy-o" aria-hidden="true")
 mixin groups_table()
 	if state.response_state && (state.response_state.bands.length > 0)
 		- var lst = state.response_state.bands
@@ -222,8 +225,11 @@ mixin group_popup()
 										span.input-group-addon= state.verbose.contacts[k]
 										input.form-control(id="contacts-list-"+k type="text" data-role="tagsinput" defaultValue=state.new_band.contacts[k].join(",") placeholder=placeholder)
 				div.modal-footer
-					button.btn.btn-default(data-dismiss="modal") закрыть
-					button.btn.btn-primary(onClick=utils.band_new_edit(state)) сохранить
+					div.text-center
+						button.btn.btn-warning.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="закрыть" data-dismiss="modal")
+							span.myicon(class="fa fa-times" aria-hidden="true")
+						button.btn.btn-primary.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="сохранить" onClick=utils.band_new_edit(state))
+							span.myicon(class="fa fa-floppy-o" aria-hidden="true")
 //
 //	PAGE CONTENT
 //

@@ -90,9 +90,23 @@ module.exports =
 			msg.subject.sessions = [session]
 			utils.to_server(msg)
 	band_new_edit: (state) ->
-		#
-		#	TODO
-		#
+		utils = @
+		contacts = jf.reduce(Object.keys(state.verbose.contacts), state.new_band.contacts, (k, acc) -> acc[k] = $('#contacts-list-'+k).tagsinput('items') ; acc )
+		state.new_band.contacts = contacts
+		state.new_band.name = $.trim(state.new_band.name)
+		state.new_band.person = $.trim(state.new_band.person)
+		if (contacts.phones.length == 0)
+			utils.error("должен быть хотя бы один номер телефона")
+		else if (state.new_band.name == "")
+			utils.error("нужно ввести имя группы")
+		else if (state.new_band.person == "")
+			utils.error("нужно ввести контактное лицо")
+		else
+			state.new_band.contacts = contacts
+			msg = utils.newmsg()
+			msg.cmd = 'CMD_band_new_edit'
+			msg.subject.bands = [state.new_band]
+			utils.to_server(msg)
 	date2moment: (date) ->
 		moment(date.getTime())
 	get_time_from_to: (state) ->

@@ -71,6 +71,7 @@ module.exports = (utils, state) ->
 			when "RS_error" then utils.error(data.message)
 			when "RS_notice"
 				$('#calendarday').modal('hide')
+				$('#group_popup').modal('hide')
 				utils.notice(data.message)
 			when "RS_refresh" then (if state.response_state then utils.CMD_get_state())
 			when "RS_ok_state"

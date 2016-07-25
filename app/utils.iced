@@ -78,7 +78,7 @@ module.exports =
 			utils.error("не выбрана группа")
 		else
 			msg = utils.newmsg()
-			session = Object.assign(state.new_session, utils.get_time_from_to(state))
+			session = utils.merge(state.new_session, utils.get_time_from_to(state))
 			wd = (date = new Date() ; date.setTime(session.time_from) ; date).getDay()
 			if (wd == 0) then (session.week_day = "WD_7") else (session.week_day = "WD_"+wd)
 			if state.new_session.id
@@ -134,3 +134,4 @@ module.exports =
 		band.enabled = true
 		band
 	check_phone: (str) -> not(not(str.match(/\+\d\d\d\d\d\d\d\d\d\d\d/)))
+	merge: (target, obj) -> jf.reduce(obj, target, (k,v,acc) -> acc[k] = v ; acc)

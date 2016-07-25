@@ -36,5 +36,24 @@ module.exports = {
 			mails: "почты",
 			social: "соц.сети",
 			other: "другие"
+		},
+		session_template_header: {
+			min_from: "начало",
+			min_to: "конец",
+			week_day: "день",
+			room_id: "комната",
+			instruments_ids: "инструменты",
+			band_id: "группа",
+			description: "комментарий"
+		},
+		week_days: {
+			WD_default: "любой",
+			WD_1: "понедельник",
+			WD_2: "вторник",
+			WD_3: "среда",
+			WD_4: "четверг",
+			WD_5: "пятница",
+			WD_6: "суббота",
+			WD_7: "воскресенье"
 		}
 	}

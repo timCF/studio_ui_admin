@@ -2,12 +2,12 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	jf = require("jsfunky")
 	timepicker_opts = {
 		minTime: "9:00",
-		#maxTime: "23.45",
+		maxTime: "24:00",
 		timeFormat: 'H:i',
 		disableTextInput: true,
 		disableTouchKeyboard: true,
 		show2400: true,
-		step: 15
+		step: 60
 	}
 	datepicker_opts = {
 		format: 'dd/mm/yyyy',
@@ -58,6 +58,10 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	}
 	# state for main function, mutable
 	state = {
+		msg_callback: false,
+		# this is custom callback, function (message, state)
+		# called on new message from server for dynamic smart popups
+		dicts: {},
 		mutex: false,
 		rnd: Math.random().toString(),
 		colors: {

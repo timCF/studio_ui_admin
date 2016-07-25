@@ -230,6 +230,43 @@ mixin group_popup()
 							span.myicon(class="fa fa-times" aria-hidden="true")
 						button.btn.btn-primary.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="сохранить" onClick=utils.band_new_edit(state))
 							span.myicon(class="fa fa-floppy-o" aria-hidden="true")
+mixin week_template_table()
+	if state.response_state && (state.response_state.sessions_template.length > 0)
+		- var lst = state.response_state.sessions_template
+		- var keys = Object.keys(state.verbose.session_template_header)
+		div.container-fluid.mt
+			div.row
+				div.col-xs-12
+					table.table-special-sorted
+						thead
+							tr
+								each k in keys
+									th.text-center= state.verbose.session_template_header[k]
+						tbody
+							each el in lst
+								tr(onClick=utils.notice("TODO"))
+									each k in keys
+										- var data = el[k]
+										if (k == "week_day")
+											td.text-center= state.verbose.week_days[data]
+										else if (k == "room_id")
+											- var color = state.response_state.rooms.filter(function(el){return el.id.toString() == data.toString();})[0].color
+											td.text-center(style="backgroundColor:"+color)
+												span= state.dicts.locations[state.rooms_of_locations[data]]
+												br
+												span= state.dicts.rooms[data]
+										else if (k == "instruments_ids")
+											td.text-center 
+												each id in data
+													span= state.dicts.instruments[id]
+													br
+										else if (k == "band_id")
+											td.text-center
+												span= state.dicts.bands[data].name
+												br
+												span= state.dicts.bands[data].person
+										else
+											td.text-center= data.toString()
 //
 //	PAGE CONTENT
 //
@@ -241,5 +278,7 @@ if state.response_state
 	else if (state.current_page == "edit_groups")
 		+groups_table()
 		+group_popup()
+	else if (state.current_page == "week_template")
+		+week_template_table()
 else
 	+auth

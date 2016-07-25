@@ -166,9 +166,7 @@ module.exports =
 				state.current_page = "edit_groups"
 				utils.render())
 			utils.timeout(1000, () ->
-				state.callbacks.close_popup = (state) ->
-					state.callbacks.close_popup = false
-					state.callbacks.msg = false
+				back_to_calendar = () ->
 					utils.timeout(500, () ->
 						state.current_page = "calendar_main"
 						utils.render()
@@ -181,10 +179,18 @@ module.exports =
 									$('#datepair .time.'+key).timepicker('setTime', datepairval.time[key]))
 								utils.render()
 								$('#calendarday').modal())))
+				state.callbacks.close_popup = (state) ->
+					console.log("callbacks.close_popup")
+					state.callbacks.close_popup = false
+					state.callbacks.msg = false
+					back_to_calendar()
 				state.callbacks.msg = (state, _) ->
-					#if state.new_band
-					#
-					#	TODO
-					#
-					null
+					console.log("callbacks.msg")
+					if state.new_band
+						[band] = state.response_state.bands.filter((el) -> (el.name == state.new_band.name) and (el.person == state.new_band.person))
+						if band
+							state.new_session.band_id = band.id
+							state.callbacks.close_popup = false
+							state.callbacks.msg = false
+							back_to_calendar()
 				utils.edit_band(state, utils.new_band(state)))

@@ -96,7 +96,7 @@ mixin session_exists()
 				+select_instruments_ids(state.rooms_of_locations[state.new_session.room_id])
 			else if (k == "band_id")
 				- var this_band = state.response_state.bands.filter(function(el){return el.id.toString() == state.new_session.band_id.toString();})[0]
-				span.form-control= this_band.name
+				span.form-control= (this_band.name+" "+this_band.person+" "+this_band.contacts.phones.join(" "))
 			else if (k == "callback")
 				div.btn-default.form-control(onClick=utils.view_swap(state, ["new_session","callback"]))
 					span.myicon(class=(state.new_session.callback ? "fa fa-check" : "fa fa-ban") aria-hidden="true")
@@ -117,10 +117,11 @@ mixin session_new()
 			else if (k == "instruments_ids")
 				+select_instruments_ids(state.ids.location)
 			else if (k == "band_id")
-				select.selectpicker.form-control(onChange=utils.view_set(state, ["new_session","band_id"]) data-live-search="true")
-					option(value="" selected disabled)= "не выбрана"
+				- var this_band = (state.new_session.band_id ? state.response_state.bands.filter(function(el){return el.id.toString() == state.new_session.band_id.toString();})[0] : "не выбрана")
+				- var placeholder = (Imuta.is_map(this_band) ? (this_band.name+" "+this_band.person+" "+this_band.contacts.phones.join(" ")) : this_band)
+				select.selectpicker.form-control(onChange=utils.view_set(state, ["new_session","band_id"]) data-live-search="true" title=placeholder)
 					each el in state.response_state.bands
-						option(value=el.id)= el.name
+						option(value=el.id)= el.name+" "+el.person+" "+el.contacts.phones.join(" ")
 				span.input-group-btn(data-toggle="tooltip" data-placement="bottom" title="добавить" onClick=utils.new_group_from_session(state))
 					button.btn.btn-danger.color2(type="button")
 						span.myicon(class="fa fa-plus-square" aria-hidden="true")

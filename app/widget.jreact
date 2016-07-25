@@ -121,6 +121,9 @@ mixin session_new()
 					option(value="" selected disabled)= "не выбрана"
 					each el in state.response_state.bands
 						option(value=el.id)= el.name
+				span.input-group-btn(data-toggle="tooltip" data-placement="bottom" title="добавить" onClick=utils.new_group_from_session(state))
+					button.btn.btn-danger.color2(type="button")
+						span.myicon(class="fa fa-plus-square" aria-hidden="true")
 			else if (k == "callback")
 				div.btn-default.form-control(onClick=utils.view_swap(state, ["new_session","callback"]))
 					span.myicon(class=(state.new_session.callback ? "fa fa-check" : "fa fa-ban") aria-hidden="true")
@@ -132,8 +135,6 @@ mixin workday_popup()
 			div.modal-dialog.modal-lg
 				div.modal-content
 					div.modal-header
-						button.close(data-dismiss="modal")
-							span &times;
 						h4.modal-title= state.workday.locale('ru').format('dddd Do MMMM YYYY')
 					div.modal-body
 						div.container-fluid

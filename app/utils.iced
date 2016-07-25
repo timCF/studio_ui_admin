@@ -149,3 +149,42 @@ module.exports =
 		band
 	check_phone: (str) -> not(not(str.match(/\+\d\d\d\d\d\d\d\d\d\d\d/)))
 	merge: (target, obj) -> jf.reduce(obj, target, (k,v,acc) -> acc[k] = v ; acc)
+	timeout: (ttl, func) -> setTimeout(func, ttl)
+	new_group_from_session: (state) ->
+		utils = @
+		if not(state.datepairval.date.start and state.datepairval.date.end and state.datepairval.time.start and state.datepairval.time.end)
+			utils.error("не выбран временной интервал сессии")
+		else
+			this_session = state.new_session
+			datepairval = {date: {}, time: {}}
+			# clone datepairval
+			["start","end"].forEach((key) ->
+				datepairval.date[key] = utils.clonedate(state.datepairval.date[key])
+				datepairval.time[key] = utils.clonedate(state.datepairval.time[key]))
+			$('#calendarday').modal('hide')
+			utils.timeout(500, () ->
+				state.current_page = "edit_groups"
+				utils.render())
+			utils.timeout(1000, () ->
+				state.callbacks.close_popup = (state) ->
+					state.callbacks.close_popup = false
+					state.callbacks.msg = false
+					utils.timeout(500, () ->
+						state.current_page = "calendar_main"
+						utils.render()
+						utils.timeout(500, () ->
+							state.new_session = this_session
+							utils.render()
+							utils.timeout(500, () ->
+								["start","end"].forEach((key) ->
+									$('#datepair .date.'+key).datepicker('setDate', datepairval.date[key])
+									$('#datepair .time.'+key).timepicker('setTime', datepairval.time[key]))
+								utils.render()
+								$('#calendarday').modal())))
+				state.callbacks.msg = (state, _) ->
+					#if state.new_band
+					#
+					#	TODO
+					#
+					null
+				utils.edit_band(state, utils.new_band(state)))

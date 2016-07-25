@@ -58,7 +58,10 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	}
 	# state for main function, mutable
 	state = {
-		msg_callback: false,
+		callbacks: {
+			msg: false,
+			close_popup: false,
+		},
 		# this is custom callback, function (message, state)
 		# called on new message from server for dynamic smart popups
 		dicts: {},
@@ -174,8 +177,8 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			$( document.getElementById(out) ).remove()
 			console.log("destroy tooltip "+out)
 	render_jqcb = () ->
-		# NOTICE !!! not reload page on submit forms
 		$('form').submit((e) -> e.preventDefault())
+		['#calendarday','#group_popup'].forEach((id) -> $(id).on('hidden.bs.modal', (_) -> (if state.callbacks.close_popup then state.callbacks.close_popup(state))))
 	render_taglists = () ->
 		Object.keys(state.verbose.contacts).forEach((k) ->
 			if document.getElementById('contacts-list-'+k)

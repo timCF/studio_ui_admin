@@ -84,6 +84,7 @@ module.exports = (utils, state) ->
 				if (data.state.sessions) then (state.events = data.state.sessions.map(create_event))
 				state.response_state = data.state
 				state.dicts.locations = jf.reduce(data.state.locations, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, id.toString(), name.toString()))
+				state.dicts.instruments = jf.reduce(data.state.instruments, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, id.toString(), name.toString()))
 				state.dicts.bands = jf.reduce(data.state.bands, {}, (band, acc) -> jf.put_in(acc, band.id.toString(), band))
 				state.dicts.instruments = jf.reduce(data.state.instruments, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, id.toString(), name.toString()))
 				state.dicts.rooms = jf.reduce(data.state.rooms, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, id.toString(), name.toString()))

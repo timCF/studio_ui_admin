@@ -197,6 +197,7 @@ module.exports =
 	week_template_edit: (state, el) ->
 		utils = @
 		this_data = utils.clone_proto(el, "SessionTemplate")
+		this_data.room_id = this_data.room_id.toString()
 		state.new_week_template = false
 		utils.render()
 		state.new_week_template = this_data
@@ -205,3 +206,6 @@ module.exports =
 		#
 		#	TODO
 		#
+	minutes2moment: (data) ->
+		data = parseInt(data)
+		moment({minutes: data % 60, hours: Math.floor(data / 60)})

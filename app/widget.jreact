@@ -7,13 +7,18 @@ mixin swapbutton(name, path, style)
 	else
 		button.btn.btn-default(class=style onClick=utils.view_swap(state, path))= name
 mixin selectitems(list, path, dict)
-	select.selectpicker.form-control(onChange=utils.view_set(state, path) data-live-search="true")
-		- var currentval = utils.view_get(state, path)
+	- var currentval = utils.view_get(state, path)
+	- var this_val = list.filter(function(el){return (el == currentval);})[0]
+	- var placeholder = ((this_val == currentval) ? dict[this_val] : "ничего не выбрано")
+	select.selectpicker.form-control(onChange=utils.view_set(state, path) data-live-search="true" title=placeholder)
 		each el in list
-			if (el == currentval)
-				option(value=el selected)= dict[el]
-			else 
-				option(value=el)= dict[el]
+			option(value=el)= dict[el]
+mixin selectitems_multiple(list, path, dict)
+	- var currentval = utils.view_get(state, path)
+	- var this_val = (currentval ? currentval : []).map(function(el){return el.toString();})
+	select.selectpicker.form-control(multiple onChange=utils.multiple_select(state, path) data-live-search="true" defaultValue=this_val)
+		each el in list
+			option(value=el)= dict[el]
 mixin fileinput(path)
 	div.btn.btn-default.btn-lg.btn-file.fill Browse or drag and drop files
 		input(type="file" multiple="true" onChange=utils.view_files(state, path))
@@ -266,6 +271,8 @@ mixin week_template_table()
 												span= state.dicts.bands[data].name
 												br
 												span= state.dicts.bands[data].person
+										else if (k == "min_from") || (k == "min_to")
+											td.text-center= utils.minutes2moment(data).format('HH:mm')
 										else
 											td.text-center= data.toString()
 mixin week_template_popup()
@@ -277,10 +284,20 @@ mixin week_template_popup()
 						div.row.text-center
 							if state.new_week_template
 								- var keys = Object.keys(state.verbose.session_template_header)
+								- var location_id = state.rooms_of_locations[state.new_week_template.room_id].toString()
 								each k in keys
 									- var this_path = ["new_week_template", k]
+									- var this_data = Imuta.access_in(state, this_path)
 									div.col-xs-12.mt.input-group
 										span.input-group-addon= state.verbose.session_template_header[k]
+										if (k == "week_day")
+											+selectitems(["WD_1","WD_2","WD_3","WD_4","WD_5","WD_6","WD_7"], this_path, state.verbose.week_days)
+										else if (k == "room_id")
+											- var room_ids = state.response_state.rooms.filter(function(el){return el.location_id.compare(location_id) == 0;}).map(function(el){return el.id;})
+											+selectitems(room_ids, this_path, state.dicts.rooms)
+										else if (k == "instruments_ids")
+											- var instruments_ids = state.response_state.instruments.filter(function(el){return el.location_id.compare(location_id) == 0;}).map(function(el){return el.id;})
+											+selectitems_multiple(instruments_ids, this_path, state.dicts.instruments)
 										//
 										//	TODO
 										//

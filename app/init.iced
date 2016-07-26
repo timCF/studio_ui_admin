@@ -117,6 +117,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		},
 		new_session: null,
 		new_band: null,
+		new_week_template: null,
 		verbose: require("verbose")
 	}
 	render = () ->

@@ -194,3 +194,14 @@ module.exports =
 							state.callbacks.msg = false
 							back_to_calendar()
 				utils.edit_band(state, utils.new_band(state)))
+	week_template_edit: (state, el) ->
+		utils = @
+		this_data = utils.clone_proto(el, "SessionTemplate")
+		state.new_week_template = false
+		utils.render()
+		state.new_week_template = this_data
+		setTimeout((() -> utils.render() ; $('#week_template_popup').modal()), 100)
+	week_template_new_edit: (state) ->
+		#
+		#	TODO
+		#

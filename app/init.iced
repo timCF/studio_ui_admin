@@ -27,14 +27,13 @@ document.addEventListener "DOMContentLoaded", (e) ->
 				state.datepairval.time.end = ''
 				state.new_session = utils.new_session(state)
 				state.workday = false
-				utils.render() # reset popup to reset content
+				utils.render2x() # reset popup to reset content
 				state.workday = date
-				utils.render()
-				utils.render() # rerender new popup some times ( somewhere is async shit )
+				utils.render2x() # rerender new popup some times ( somewhere is async shit )
 				$('#datepair .time.start').timepicker('setTime', '')
 				$('#datepair .time.end').timepicker('setTime', '')
 				$('#datepair .date.start').datepicker('setDate', date.toDate())
-				utils.render()
+				utils.render2x()
 				$('#calendarday').modal()
 			else
 				utils.error("не выбрана комната")),
@@ -42,18 +41,17 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		eventClick: (({id: id}, _, __) ->
 			state.new_session = utils.clone_proto(state.response_state.sessions.filter(({id: this_id}) -> this_id.compare(id) == 0)[0], "Session")
 			state.workday = false
-			utils.render() # reset popup to reset content
+			utils.render2x() # reset popup to reset content
 			state.workday = moment(state.new_session.time_from.toString() * 1000)
-			utils.render()
-			utils.render() # rerender new popup some times ( somewhere is async shit )
+			utils.render2x() # rerender new popup some times ( somewhere is async shit )
 			ds = moment(state.new_session.time_from.toString() * 1000).toDate()
 			de = moment(state.new_session.time_to.toString() * 1000).toDate()
 			$('#datepair .date.start').datepicker('setDate', ds)
 			$('#datepair .date.end').datepicker('setDate', de)
 			$('#datepair .time.start').timepicker('setTime', ds)
 			$('#datepair .time.end').timepicker('setTime', de)
-			utils.render()
-			new_datepairval()
+			utils.render2x()
+			utils.new_datepairval(state)
 			$('#calendarday').modal())
 	}
 	# state for main function, mutable
@@ -120,7 +118,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		new_week_template: null,
 		verbose: require("verbose")
 	}
-	render = () ->
+	render = (cb) ->
 		state.dimensions.height = window.innerHeight
 		state.dimensions.width = window.innerWidth
 		render_datepair()
@@ -129,7 +127,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		render_jqcb()
 		render_tables()
 		render_taglists()
-		react.render(widget(fullstate), document.getElementById("main_frame"))
+		react.render(widget(fullstate), document.getElementById("main_frame"), (_) -> (if jf.is_function(cb,1) then cb(state)))
 	render_coroutine = () ->
 		render()
 		setTimeout(render_coroutine, 500)
@@ -139,20 +137,6 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	fullstate = Object.freeze({state: state, utils: utils})
 	react = require("react-dom")
 	widget = require("widget")
-	new_datepairval = () ->
-		console.log("new datepairval")
-		state.datepairval.date.start = $('#datepair .date.start').datepicker('getDate')
-		state.datepairval.date.end = $('#datepair .date.end').datepicker('getDate')
-		state.datepairval.time.start = $('#datepair .time.start').timepicker('getTime')
-		state.datepairval.time.end = $('#datepair .time.end').timepicker('getTime')
-		if (state.datepairval.date.start and state.datepairval.time.start and state.datepairval.time.end)
-			date = utils.clonedate(state.datepairval.date.start)
-			switch (state.datepairval.time.start <= state.datepairval.time.end) and not((state.datepairval.time.end.getMinutes() == 0) and (state.datepairval.time.end.getHours() == 0))
-				when true then state.datepairval.date.end = date
-				when false
-					date.setDate(date.getDate() + 1)
-					state.datepairval.date.end = date
-			$('#datepair .date.end').datepicker('setDate', date)
 	render_datepair = () ->
 		datepair = document.getElementById('datepair')
 		if not(datepair) then (state.datepair = false)
@@ -160,9 +144,9 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			$('#datepair .time').timepicker(timepicker_opts)
 			$('#datepair .date').datepicker(datepicker_opts)
 			state.datepair = new Datepair(datepair, {defaultTimeDelta: 10800000, defaultDateDelta: null})
-			$('#datepair').on('rangeSelected', new_datepairval)
-			$('#datepair').on('rangeError', new_datepairval)
-			$('#datepair').on('rangeIncomplete', new_datepairval)
+			$('#datepair').on('rangeSelected', () -> utils.new_datepairval(state))
+			$('#datepair').on('rangeError', () -> utils.new_datepairval(state))
+			$('#datepair').on('rangeIncomplete', () -> utils.new_datepairval(state))
 			console.log("render datepair")
 	render_calendar = () ->
 		calendar = document.getElementById('calendar')

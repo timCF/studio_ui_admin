@@ -67,6 +67,9 @@ mixin navbar()
 			if (state.current_page == "edit_groups")
 				button.btn.btn-danger.btn-lg.color2.ml.mt(data-toggle="tooltip" data-placement="bottom" title="добавить" onClick=utils.edit_band(state, utils.new_band(state)))
 					span.myicon(class="fa fa-plus-square" aria-hidden="true")
+			if (state.current_page == "week_template")
+				button.btn.btn-danger.btn-lg.color2.ml.mt(data-toggle="tooltip" data-placement="bottom" title="добавить" onClick=utils.week_template_edit(state, utils.new_week_template(state)))
+					span.myicon(class="fa fa-plus-square" aria-hidden="true")
 			div.btn-group.ml.mt
 				- var maybe_admin = state.response_state.admins.filter(function(el){return (el.login == state.request_template.login) && (el.password == state.request_template.password);})[0]
 				- var this_admin_name = (maybe_admin ? maybe_admin.name : "anon")
@@ -284,8 +287,13 @@ mixin week_template_popup()
 					div.container-fluid
 						div.row.text-center
 							if state.new_week_template
-								- var keys = Object.keys(state.verbose.session_template_header)
+								- var keys = Object.keys(state.verbose.session_template_header).filter(function(k){return ((k != "min_from") && (k != "min_to"));})
 								- var location_id = state.rooms_of_locations[state.new_week_template.room_id].toString()
+								div.col-xs-12.form-inline.mb(id="datepair")
+									input.form-control.date.start.hidden(type="text" placeholder="дата начала")
+									input.form-control.time.start(type="text" placeholder="время начала")
+									input.form-control.time.end(type="text" placeholder="время окончания")
+									input.form-control.date.end.hidden(type="text" placeholder="дата окончания" disabled)
 								each k in keys
 									- var this_path = ["new_week_template", k]
 									- var this_data = Imuta.access_in(state, this_path)
@@ -300,16 +308,15 @@ mixin week_template_popup()
 											- var instruments_ids = state.response_state.instruments.filter(function(el){return el.location_id.compare(location_id) == 0;}).map(function(el){return el.id;})
 											+selectitems_multiple(instruments_ids, this_path, state.dicts.instruments)
 										else if (k == "band_id")
-											span.form-control= state.dicts.bands[this_data].name+" "+state.dicts.bands[this_data].person
-										else if (k == "min_from") || (k == "min_to")
-											span.form-control= utils.minutes2moment(this_data).format('HH:mm')
+											- var this_band = (this_data ? state.response_state.bands.filter(function(el){return el.id.toString() == this_data.toString();})[0] : "не выбрана")
+											- var placeholder = (Imuta.is_map(this_band) ? (this_band.name+" "+this_band.person+" "+this_band.contacts.phones.join(" ")) : this_band)
+											select.selectpicker.form-control(onChange=utils.view_set(state, this_path) data-live-search="true" title=placeholder)
+												each el in state.response_state.bands
+													option(value=el.id)= el.name+" "+el.person+" "+el.contacts.phones.join(" ")
 										else if (k == "description")
 											input.form-control(placeholder="" type="text" onChange=utils.view_set(state, this_path) defaultValue=this_data)
 										else
 											span.form-control= this_data.toString()
-										//
-										//	TODO
-										//
 				div.modal-footer
 					div.text-center
 						button.btn.btn-warning.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="закрыть" data-dismiss="modal")

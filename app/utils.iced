@@ -19,7 +19,7 @@ module.exports =
 		utils = @
 		state.ids.location = false
 		state.ids.room = false
-		utils.render()
+		utils.render2x()
 		if (ev? and ev.target? and ev.target.value?)
 			subj = ev.target.value
 			Imuta.update_in(state, ["ids","location"], (_) -> (if subj == "" then false else subj))
@@ -125,9 +125,9 @@ module.exports =
 		utils = @
 		this_band = utils.clone_proto(el, "Band")
 		state.new_band = false
-		utils.render()
+		utils.render2x()
 		state.new_band = this_band
-		setTimeout((() -> utils.render() ; $('#group_popup').modal()), 100)
+		setTimeout((() -> utils.render2x() ; $('#group_popup').modal()), 100)
 	new_band: (state) ->
 		utils = @
 		band = new utils.proto.Band
@@ -147,6 +147,21 @@ module.exports =
 		band.can_order = false
 		band.enabled = true
 		band
+	new_week_template: (state) ->
+		utils = @
+		st = new utils.proto.SessionTemplate
+		st.id = null
+		st.min_from = 540
+		st.min_to = 720
+		st.week_day = "WD_1"
+		st.room_id = state.ids.room
+		st.instruments_ids = []
+		st.band_id = null
+		st.description = ""
+		st.admin_id = state.ids.admin
+		st.enabled = true
+		st.stamp = null
+		st
 	check_phone: (str) -> not(not(str.match(/\+\d\d\d\d\d\d\d\d\d\d\d/)))
 	merge: (target, obj) -> jf.reduce(obj, target, (k,v,acc) -> acc[k] = v ; acc)
 	timeout: (ttl, func) -> setTimeout(func, ttl)
@@ -164,20 +179,20 @@ module.exports =
 			$('#calendarday').modal('hide')
 			utils.timeout(500, () ->
 				state.current_page = "edit_groups"
-				utils.render())
+				utils.render2x())
 			utils.timeout(1000, () ->
 				back_to_calendar = () ->
 					utils.timeout(500, () ->
 						state.current_page = "calendar_main"
-						utils.render()
+						utils.render2x()
 						utils.timeout(500, () ->
 							state.new_session = this_session
-							utils.render()
+							utils.render2x()
 							utils.timeout(500, () ->
 								["start","end"].forEach((key) ->
 									$('#datepair .date.'+key).datepicker('setDate', datepairval.date[key])
 									$('#datepair .time.'+key).timepicker('setTime', datepairval.time[key]))
-								utils.render()
+								utils.render2x()
 								$('#calendarday').modal())))
 				state.callbacks.close_popup = (state) ->
 					console.log("callbacks.close_popup")
@@ -196,16 +211,53 @@ module.exports =
 				utils.edit_band(state, utils.new_band(state)))
 	week_template_edit: (state, el) ->
 		utils = @
-		this_data = utils.clone_proto(el, "SessionTemplate")
-		this_data.room_id = this_data.room_id.toString()
-		state.new_week_template = false
-		utils.render()
-		state.new_week_template = this_data
-		setTimeout((() -> utils.render() ; $('#week_template_popup').modal()), 100)
+		if not(el.room_id)
+			utils.error("не выбрана комната")
+		else
+			this_band_id = if el.band_id then el.band_id.toString() else null
+			el.band_id = if el.band_id then el.band_id else 999 # only for clone
+			this_data = utils.clone_proto(el, "SessionTemplate")
+			this_data.band_id = this_band_id
+			this_data.room_id = this_data.room_id.toString()
+			state.new_week_template = false
+			utils.render2x()
+			utils.timeout(150, () ->
+				state.new_week_template = this_data
+				utils.render2x()
+				utils.timeout(150, () ->
+					ds = utils.minutes2moment(this_data.min_from).toDate()
+					de = utils.minutes2moment(this_data.min_to).toDate()
+					$('#datepair .time.start').timepicker('setTime', ds)
+					$('#datepair .time.end').timepicker('setTime', de)
+					utils.render2x()
+					utils.new_datepairval(state)
+					utils.timeout(150, () ->
+						utils.render2x()
+						$('#week_template_popup').modal())))
 	week_template_new_edit: (state) ->
+		console.log(state.new_week_template)
 		#
-		#	TODO
+		#	TODO get datepairvals!!!!!!!
 		#
 	minutes2moment: (data) ->
 		data = parseInt(data)
 		moment({minutes: data % 60, hours: Math.floor(data / 60)})
+	new_datepairval: (state) ->
+		utils = @
+		console.log("new datepairval")
+		state.datepairval.date.start = $('#datepair .date.start').datepicker('getDate')
+		state.datepairval.date.end = $('#datepair .date.end').datepicker('getDate')
+		state.datepairval.time.start = $('#datepair .time.start').timepicker('getTime')
+		state.datepairval.time.end = $('#datepair .time.end').timepicker('getTime')
+		if (state.datepairval.date.start and state.datepairval.time.start and state.datepairval.time.end)
+			date = utils.clonedate(state.datepairval.date.start)
+			switch (state.datepairval.time.start <= state.datepairval.time.end) and not((state.datepairval.time.end.getMinutes() == 0) and (state.datepairval.time.end.getHours() == 0))
+				when true then state.datepairval.date.end = date
+				when false
+					date.setDate(date.getDate() + 1)
+					state.datepairval.date.end = date
+			$('#datepair .date.end').datepicker('setDate', date)
+	render2x: () ->
+		utils = @
+		utils.render()
+		utils.render()

@@ -17,11 +17,11 @@ module.exports =
 			Imuta.update_in(state, path, (_) -> subj)
 	set_location: (state, ev) ->
 		utils = @
-		state.ids.location = false
-		state.ids.room = false
-		utils.render2x()
 		if (ev? and ev.target? and ev.target.value?)
 			subj = ev.target.value
+			state.ids.location = false
+			state.ids.room = false
+			await utils.render(defer _)
 			Imuta.update_in(state, ["ids","location"], (_) -> (if subj == "" then false else subj))
 	set_room: (state, path, ev) ->
 		utils = @
@@ -125,9 +125,10 @@ module.exports =
 		utils = @
 		this_band = utils.clone_proto(el, "Band")
 		state.new_band = false
-		utils.render2x()
+		await utils.render(defer _)
 		state.new_band = this_band
-		setTimeout((() -> utils.render2x() ; $('#group_popup').modal()), 100)
+		await utils.render(defer _)
+		$('#group_popup').modal()
 	new_band: (state) ->
 		utils = @
 		band = new utils.proto.Band
@@ -177,22 +178,21 @@ module.exports =
 				datepairval.date[key] = utils.clonedate(state.datepairval.date[key])
 				datepairval.time[key] = utils.clonedate(state.datepairval.time[key]))
 			$('#calendarday').modal('hide')
-			utils.timeout(500, () ->
-				state.current_page = "edit_groups"
-				utils.render2x())
-			utils.timeout(1000, () ->
+			state.current_page = "edit_groups"
+			await utils.render(defer _)
+			utils.timeout(333, () ->
 				back_to_calendar = () ->
-					utils.timeout(500, () ->
+					utils.timeout(333, () ->
 						state.current_page = "calendar_main"
-						utils.render2x()
-						utils.timeout(500, () ->
+						await utils.render(defer _)
+						utils.timeout(333, () ->
 							state.new_session = this_session
-							utils.render2x()
-							utils.timeout(500, () ->
+							await utils.render(defer _)
+							utils.timeout(333, () ->
 								["start","end"].forEach((key) ->
 									$('#datepair .date.'+key).datepicker('setDate', datepairval.date[key])
 									$('#datepair .time.'+key).timepicker('setTime', datepairval.time[key]))
-								utils.render2x()
+								await utils.render(defer _)
 								$('#calendarday').modal())))
 				state.callbacks.close_popup = (state) ->
 					console.log("callbacks.close_popup")
@@ -220,19 +220,19 @@ module.exports =
 			this_data.band_id = this_band_id
 			this_data.room_id = this_data.room_id.toString()
 			state.new_week_template = false
-			utils.render2x()
-			utils.timeout(150, () ->
+			await utils.render(defer __dummy__)
+			utils.timeout(333, () ->
 				state.new_week_template = this_data
-				utils.render2x()
-				utils.timeout(150, () ->
+				await utils.render(defer _)
+				utils.timeout(333, () ->
 					ds = utils.minutes2moment(this_data.min_from).toDate()
 					de = utils.minutes2moment(this_data.min_to).toDate()
 					$('#datepair .time.start').timepicker('setTime', ds)
 					$('#datepair .time.end').timepicker('setTime', de)
-					utils.render2x()
+					await utils.render(defer _)
 					utils.new_datepairval(state)
-					utils.timeout(150, () ->
-						utils.render2x()
+					utils.timeout(333, () ->
+						await utils.render(defer _)
 						$('#week_template_popup').modal())))
 	week_template_new_edit: (state) ->
 		console.log(state.new_week_template)
@@ -257,7 +257,3 @@ module.exports =
 					date.setDate(date.getDate() + 1)
 					state.datepairval.date.end = date
 			$('#datepair .date.end').datepicker('setDate', date)
-	render2x: () ->
-		utils = @
-		utils.render()
-		utils.render()

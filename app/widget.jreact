@@ -109,7 +109,7 @@ mixin session_exists()
 			else if (k == "amount")
 				span.form-control= state.new_session.amount.toString()
 			else if (k == "description")
-				input.form-control(type="text" onChange=utils.view_set(state, ["new_session","description"]))
+				input.form-control(type="text" onChange=utils.view_set(state, ["new_session","description"]) defaultValue=utils.view_get(state, ["new_session","description"]))
 mixin session_new()
 	- var fields = ["room_id","instruments_ids","band_id","callback","description"]
 	each k in fields
@@ -133,7 +133,7 @@ mixin session_new()
 				div.btn-default.form-control(onClick=utils.view_swap(state, ["new_session","callback"]))
 					span.myicon(class=(state.new_session.callback ? "fa fa-check" : "fa fa-ban") aria-hidden="true")
 			else if (k == "description")
-				input.form-control(type="text" onChange=utils.view_set(state, ["new_session","description"]))
+				input.form-control(type="text" onChange=utils.view_set(state, ["new_session","description"]) defaultValue=utils.view_get(state, ["new_session","description"]))
 mixin workday_popup()
 	if state.workday
 		div.modal.fade(tabIndex="-1" id="calendarday")
@@ -202,6 +202,7 @@ mixin group_popup()
 								- var headers = state.groups_header.filter(function(el){return (el.key != "balance") && (el.key != "contacts");})
 								each k in headers
 									- var this_path = ["new_band", k.key]
+									- var defval = Imuta.access_in(state, this_path)
 									div.col-xs-12.mt.input-group
 										span.input-group-addon= k.transl
 										if (k.key == "name") && band.id
@@ -219,7 +220,7 @@ mixin group_popup()
 												each bk in ["BK_base","BK_cover","BK_education"]
 													option(value=bk)= state.verbose.band_kind[bk]
 										else if (k.key == "description")
-											input.form-control(placeholder="" type="text" onChange=utils.view_set(state, this_path))
+											input.form-control(placeholder="" type="text" onChange=utils.view_set(state, this_path) defaultValue=defval)
 										else if (k.key == "can_order")
 											div.btn-default.form-control(onClick=utils.view_swap(state, this_path))
 												span.myicon(class=(Imuta.get_in(state, this_path) ? "fa fa-check" : "fa fa-ban") aria-hidden="true")
@@ -298,6 +299,14 @@ mixin week_template_popup()
 										else if (k == "instruments_ids")
 											- var instruments_ids = state.response_state.instruments.filter(function(el){return el.location_id.compare(location_id) == 0;}).map(function(el){return el.id;})
 											+selectitems_multiple(instruments_ids, this_path, state.dicts.instruments)
+										else if (k == "band_id")
+											span.form-control= state.dicts.bands[this_data].name+" "+state.dicts.bands[this_data].person
+										else if (k == "min_from") || (k == "min_to")
+											span.form-control= utils.minutes2moment(this_data).format('HH:mm')
+										else if (k == "description")
+											input.form-control(placeholder="" type="text" onChange=utils.view_set(state, this_path) defaultValue=this_data)
+										else
+											span.form-control= this_data.toString()
 										//
 										//	TODO
 										//

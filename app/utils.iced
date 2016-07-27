@@ -21,7 +21,7 @@ module.exports =
 			subj = ev.target.value
 			state.ids.location = false
 			state.ids.room = false
-			await utils.render(defer _)
+			await utils.render(defer dummy)
 			Imuta.update_in(state, ["ids","location"], (_) -> (if subj == "" then false else subj))
 	set_room: (state, path, ev) ->
 		utils = @
@@ -125,9 +125,9 @@ module.exports =
 		utils = @
 		this_band = utils.clone_proto(el, "Band")
 		state.new_band = false
-		await utils.render(defer _)
+		await utils.render(defer dummy)
 		state.new_band = this_band
-		await utils.render(defer _)
+		await utils.render(defer dummy)
 		$('#group_popup').modal()
 	new_band: (state) ->
 		utils = @
@@ -178,22 +178,22 @@ module.exports =
 				datepairval.date[key] = utils.clonedate(state.datepairval.date[key])
 				datepairval.time[key] = utils.clonedate(state.datepairval.time[key]))
 			$('#calendarday').modal('hide')
+			await utils.render(defer dummy)
 			state.current_page = "edit_groups"
-			await utils.render(defer _)
-			utils.timeout(333, () ->
+			await utils.render(defer dummy)
+			utils.timeout(500, () ->
 				back_to_calendar = () ->
-					utils.timeout(333, () ->
-						state.current_page = "calendar_main"
-						await utils.render(defer _)
-						utils.timeout(333, () ->
-							state.new_session = this_session
-							await utils.render(defer _)
-							utils.timeout(333, () ->
-								["start","end"].forEach((key) ->
-									$('#datepair .date.'+key).datepicker('setDate', datepairval.date[key])
-									$('#datepair .time.'+key).timepicker('setTime', datepairval.time[key]))
-								await utils.render(defer _)
-								$('#calendarday').modal())))
+					await utils.render(defer dummy)
+					state.current_page = "calendar_main"
+					await utils.render(defer dummy)
+					state.new_session = this_session
+					await utils.render(defer dummy)
+					utils.timeout(500, () ->
+						["start","end"].forEach((key) ->
+							$('#datepair .date.'+key).datepicker('setDate', datepairval.date[key])
+							$('#datepair .time.'+key).timepicker('setTime', datepairval.time[key]))
+						await utils.render(defer dummy)
+						$('#calendarday').modal())
 				state.callbacks.close_popup = (state) ->
 					console.log("callbacks.close_popup")
 					state.callbacks.close_popup = false
@@ -220,20 +220,18 @@ module.exports =
 			this_data.band_id = this_band_id
 			this_data.room_id = this_data.room_id.toString()
 			state.new_week_template = false
-			await utils.render(defer __dummy__)
-			utils.timeout(333, () ->
-				state.new_week_template = this_data
-				await utils.render(defer _)
-				utils.timeout(333, () ->
-					ds = utils.minutes2moment(this_data.min_from).toDate()
-					de = utils.minutes2moment(this_data.min_to).toDate()
-					$('#datepair .time.start').timepicker('setTime', ds)
-					$('#datepair .time.end').timepicker('setTime', de)
-					await utils.render(defer _)
-					utils.new_datepairval(state)
-					utils.timeout(333, () ->
-						await utils.render(defer _)
-						$('#week_template_popup').modal())))
+			await utils.render(defer dummy)
+			state.new_week_template = this_data
+			await utils.render(defer dummy)
+			utils.timeout(500, () ->
+				ds = utils.minutes2moment(this_data.min_from).toDate()
+				de = utils.minutes2moment(this_data.min_to).toDate()
+				$('#datepair .time.start').timepicker('setTime', ds)
+				$('#datepair .time.end').timepicker('setTime', de)
+				await utils.render(defer dummy)
+				utils.new_datepairval(state)
+				await utils.render(defer dummy)
+				$('#week_template_popup').modal())
 	week_template_new_edit: (state) ->
 		console.log(state.new_week_template)
 		#

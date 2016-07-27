@@ -27,13 +27,13 @@ document.addEventListener "DOMContentLoaded", (e) ->
 				state.datepairval.time.end = ''
 				state.new_session = utils.new_session(state)
 				state.workday = false
-				await utils.render(defer _) # reset popup to reset content
+				await utils.render(defer dummy) # reset popup to reset content
 				state.workday = date
-				await utils.render(defer _) # rerender new popup some times ( somewhere is async shit )
+				await utils.render(defer dummy) # rerender new popup
 				$('#datepair .time.start').timepicker('setTime', '')
 				$('#datepair .time.end').timepicker('setTime', '')
 				$('#datepair .date.start').datepicker('setDate', date.toDate())
-				await utils.render(defer _)
+				await utils.render(defer dummy)
 				$('#calendarday').modal()
 			else
 				utils.error("не выбрана комната")),
@@ -41,16 +41,16 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		eventClick: (({id: id}, _, __) ->
 			state.new_session = utils.clone_proto(state.response_state.sessions.filter(({id: this_id}) -> this_id.compare(id) == 0)[0], "Session")
 			state.workday = false
-			await utils.render(defer _) # reset popup to reset content
+			await utils.render(defer dummy) # reset popup to reset content
 			state.workday = moment(state.new_session.time_from.toString() * 1000)
-			await utils.render(defer _) # rerender new popup some times ( somewhere is async shit )
+			await utils.render(defer dummy) # rerender new popup
 			ds = moment(state.new_session.time_from.toString() * 1000).toDate()
 			de = moment(state.new_session.time_to.toString() * 1000).toDate()
 			$('#datepair .date.start').datepicker('setDate', ds)
 			$('#datepair .date.end').datepicker('setDate', de)
 			$('#datepair .time.start').timepicker('setTime', ds)
 			$('#datepair .time.end').timepicker('setTime', de)
-			await utils.render(defer _)
+			await utils.render(defer dummy)
 			utils.new_datepairval(state)
 			$('#calendarday').modal())
 	}
@@ -127,7 +127,9 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		render_jqcb()
 		render_tables()
 		render_taglists()
-		react.render(widget(fullstate), document.getElementById("main_frame"), (_) -> (if jf.is_function(cb,1) then cb(state)))
+		await react.render(widget(fullstate), document.getElementById("main_frame"), defer dummy)
+		if jf.is_function(cb,1) then cb(state)
+		dummy
 	render_coroutine = () ->
 		render()
 		setTimeout(render_coroutine, 500)

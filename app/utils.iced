@@ -245,6 +245,12 @@ module.exports =
 			msg.cmd = 'CMD_week_template_new_edit'
 			msg.subject.sessions_template = [state.new_week_template]
 			utils.to_server(msg)
+	week_template_disable: (state) ->
+			utils = @
+			msg = utils.newmsg()
+			msg.cmd = 'CMD_week_template_disable'
+			msg.subject.sessions_template = [state.new_week_template]
+			utils.to_server(msg)
 	minutes2moment: (data) ->
 		data = parseInt(data)
 		moment({minutes: data % 60, hours: Math.floor(data / 60)})

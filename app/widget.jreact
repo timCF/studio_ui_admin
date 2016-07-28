@@ -323,6 +323,9 @@ mixin week_template_popup()
 							span.myicon(class="fa fa-times" aria-hidden="true")
 						button.btn.btn-primary.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="сохранить" onClick=utils.week_template_new_edit(state))
 							span.myicon(class="fa fa-floppy-o" aria-hidden="true")
+						if state.new_week_template && state.new_week_template.id
+							button.btn.btn-danger.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="удалить" onClick=utils.week_template_disable(state))
+								span.myicon(class="fa fa-trash" aria-hidden="true")
 //
 //	PAGE CONTENT
 //

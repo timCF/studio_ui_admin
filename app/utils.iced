@@ -226,6 +226,8 @@ module.exports =
 			utils.timeout(500, () ->
 				ds = utils.minutes2moment(this_data.min_from).toDate()
 				de = utils.minutes2moment(this_data.min_to).toDate()
+				$('#datepair .date.start').datepicker('setDate', ds)
+				$('#datepair .date.end').datepicker('setDate', de)
 				$('#datepair .time.start').timepicker('setTime', ds)
 				$('#datepair .time.end').timepicker('setTime', de)
 				await utils.render(defer dummy)
@@ -234,9 +236,8 @@ module.exports =
 				$('#week_template_popup').modal())
 	week_template_new_edit: (state) ->
 		utils = @
-		#
-		#	TODO : get datepairvals
-		#
+		state.new_week_template.min_from = utils.date2minutes( state.datepairval.time.start )
+		state.new_week_template.min_to = utils.date2minutes( state.datepairval.time.end )
 		if not(state.new_week_template.band_id)
 			utils.error("необходимо выбрать группу")
 		else
@@ -247,6 +248,8 @@ module.exports =
 	minutes2moment: (data) ->
 		data = parseInt(data)
 		moment({minutes: data % 60, hours: Math.floor(data / 60)})
+	date2minutes: (date) ->
+		date.getMinutes() + (60 * date.getHours())
 	new_datepairval: (state) ->
 		utils = @
 		console.log("new datepairval")

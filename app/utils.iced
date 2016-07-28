@@ -89,6 +89,33 @@ module.exports =
 				session.admin_id_open = state.ids.admin
 			msg.subject.sessions = [session]
 			utils.to_server(msg)
+	session_new_edit_template: (state) ->
+		# add / edit sessions template from sessions popup
+		utils = @
+		if not(state.datepairval.date.start and state.datepairval.date.end and state.datepairval.time.start and state.datepairval.time.end)
+			utils.error("не выбран временной интервал сессии")
+		else if not(state.new_session.band_id)
+			utils.error("не выбрана группа")
+		else
+			dummy_session = utils.merge(state.new_session, utils.get_time_from_to(state))
+			wd = (date = new Date() ; date.setTime(dummy_session.time_from) ; date).getDay()
+			if (wd == 0) then (dummy_session.week_day = "WD_7") else (dummy_session.week_day = "WD_"+wd)
+			st = utils.new_week_template(state)
+			st.id = null
+			st.min_from = utils.date2minutes( state.datepairval.time.start )
+			st.min_to = utils.date2minutes( state.datepairval.time.end )
+			st.week_day = dummy_session.week_day
+			st.room_id = dummy_session.room_id
+			st.instruments_ids = dummy_session.instruments_ids
+			st.band_id = dummy_session.band_id
+			st.description = dummy_session.description
+			st.admin_id = state.ids.admin
+			st.enabled = true
+			st.stamp = null
+			msg = utils.newmsg()
+			msg.cmd = 'CMD_week_template_new_edit_from_session'
+			msg.subject.sessions_template = [st]
+			utils.to_server(msg)
 	band_new_edit: (state) ->
 		utils = @
 		contacts = jf.reduce(Object.keys(state.verbose.contacts), state.new_band.contacts, (k, acc) -> acc[k] = $('#contacts-list-'+k).tagsinput('items') ; acc )

@@ -77,6 +77,8 @@ module.exports = (utils, state) ->
 				$('#group_popup').modal('hide')
 				$('#week_template_popup').modal('hide')
 				utils.notice(data.message)
+			when "RS_info"
+				utils.notice(data.message)
 			when "RS_refresh" then (if state.response_state then utils.CMD_get_state())
 			when "RS_ok_state"
 				store.set("login", state.request_template.login)

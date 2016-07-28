@@ -30,15 +30,16 @@ document.addEventListener "DOMContentLoaded", (e) ->
 				await utils.render(defer dummy) # reset popup to reset content
 				state.workday = date
 				await utils.render(defer dummy) # rerender new popup
-				$('#datepair .time.start').timepicker('setTime', '')
-				$('#datepair .time.end').timepicker('setTime', '')
-				$('#datepair .date.start').datepicker('setDate', date.toDate())
-				await utils.render(defer dummy)
-				$('#calendarday').modal()
+				utils.timeout(500, () ->
+					$('#datepair .time.start').timepicker('setTime', '')
+					$('#datepair .time.end').timepicker('setTime', '')
+					$('#datepair .date.start').datepicker('setDate', date.toDate())
+					await utils.render(defer dummy)
+					$('#calendarday').modal())
 			else
 				utils.error("не выбрана комната")),
 		eventAfterRender: ((data, element, _) -> $(element).css('width', ($(element).width() * data.percentfill) + 'px'))
-		eventClick: (({id: id}, _, __) ->
+		eventClick: ({id: id}, _, __) ->
 			state.new_session = utils.clone_proto(state.response_state.sessions.filter(({id: this_id}) -> this_id.compare(id) == 0)[0], "Session")
 			state.workday = false
 			await utils.render(defer dummy) # reset popup to reset content
@@ -46,13 +47,14 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			await utils.render(defer dummy) # rerender new popup
 			ds = moment(state.new_session.time_from.toString() * 1000).toDate()
 			de = moment(state.new_session.time_to.toString() * 1000).toDate()
-			$('#datepair .date.start').datepicker('setDate', ds)
-			$('#datepair .date.end').datepicker('setDate', de)
-			$('#datepair .time.start').timepicker('setTime', ds)
-			$('#datepair .time.end').timepicker('setTime', de)
-			await utils.render(defer dummy)
-			utils.new_datepairval(state)
-			$('#calendarday').modal())
+			utils.timeout(500, () ->
+				$('#datepair .date.start').datepicker('setDate', ds)
+				$('#datepair .date.end').datepicker('setDate', de)
+				$('#datepair .time.start').timepicker('setTime', ds)
+				$('#datepair .time.end').timepicker('setTime', de)
+				await utils.render(defer dummy)
+				utils.new_datepairval(state)
+				$('#calendarday').modal())
 	}
 	# state for main function, mutable
 	state = {

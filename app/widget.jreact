@@ -164,6 +164,8 @@ mixin workday_popup()
 								span.myicon(class="fa fa-times" aria-hidden="true")
 							button.btn.btn-primary.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="сохранить" onClick=utils.session_new_edit(state))
 								span.myicon(class="fa fa-floppy-o" aria-hidden="true")
+							button.btn.btn-danger.btn-lg.ml.color2(data-toggle="tooltip" data-placement="bottom" title="встать на постоянку" onClick=utils.session_new_edit_template(state))
+								span.myicon(class="fa fa-database" aria-hidden="true")
 mixin groups_table()
 	if state.response_state && (state.response_state.bands.length > 0)
 		- var lst = state.response_state.bands

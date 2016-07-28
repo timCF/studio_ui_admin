@@ -233,10 +233,17 @@ module.exports =
 				await utils.render(defer dummy)
 				$('#week_template_popup').modal())
 	week_template_new_edit: (state) ->
-		console.log(state.new_week_template)
+		utils = @
 		#
-		#	TODO get datepairvals!!!!!!!
+		#	TODO : get datepairvals
 		#
+		if not(state.new_week_template.band_id)
+			utils.error("необходимо выбрать группу")
+		else
+			msg = utils.newmsg()
+			msg.cmd = 'CMD_week_template_new_edit'
+			msg.subject.sessions_template = [state.new_week_template]
+			utils.to_server(msg)
 	minutes2moment: (data) ->
 		data = parseInt(data)
 		moment({minutes: data % 60, hours: Math.floor(data / 60)})

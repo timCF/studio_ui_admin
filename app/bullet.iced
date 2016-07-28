@@ -75,6 +75,7 @@ module.exports = (utils, state) ->
 				# hide popups side-effect
 				$('#calendarday').modal('hide')
 				$('#group_popup').modal('hide')
+				$('#week_template_popup').modal('hide')
 				utils.notice(data.message)
 			when "RS_refresh" then (if state.response_state then utils.CMD_get_state())
 			when "RS_ok_state"

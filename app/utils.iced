@@ -104,6 +104,7 @@ module.exports =
 			st.id = null
 			st.min_from = utils.date2minutes( state.datepairval.time.start )
 			st.min_to = utils.date2minutes( state.datepairval.time.end )
+			st.min_to = if (st.min_to == 0) then 1440 else st.min_to
 			st.week_day = dummy_session.week_day
 			st.room_id = dummy_session.room_id
 			st.instruments_ids = dummy_session.instruments_ids
@@ -265,6 +266,7 @@ module.exports =
 		utils = @
 		state.new_week_template.min_from = utils.date2minutes( state.datepairval.time.start )
 		state.new_week_template.min_to = utils.date2minutes( state.datepairval.time.end )
+		state.new_week_template.min_to = if (state.new_week_template.min_to == 0) then 1440 else state.new_week_template.min_to
 		if not(state.new_week_template.band_id)
 			utils.error("необходимо выбрать группу")
 		else

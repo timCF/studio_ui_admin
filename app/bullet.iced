@@ -12,6 +12,8 @@ module.exports = (utils, state) ->
 		m_to = moment(time_to * 1000)
 		percentfill = Math.abs(time_to - time_from) / 10800
 		percentfill = if (percentfill > 1) then 1 else percentfill
+		rooms = jf.get_in(state, ["response_state","rooms"])
+		this_room = if jf.is_list(rooms) then rooms.filter(({id: rid}) -> rid.compare(room_id) == 0)[0] else null
 		{
 			id: id,
 			title: m_from.format('HH:mm')+" - "+m_to.format('HH:mm'),
@@ -19,7 +21,7 @@ module.exports = (utils, state) ->
 			end: m_to.format('YYYY-MM-DD'),
 			percentfill: percentfill,
 			room_id: room_id,
-			color: state.colors.sesions[status]
+			color: if not(this_room) then state.colors.sesions[status] else (if (status == "SS_awaiting_first") then this_room.color else net.brehaut.Color(this_room.color).setAlpha(0.3).toString())
 		}
 	long2date = (long) ->
 		moment(1000 * parseInt(long.toString())).format('YYYY-MM-DD HH:mm:ss')
@@ -84,8 +86,8 @@ module.exports = (utils, state) ->
 				store.set("login", state.request_template.login)
 				store.set("password", state.request_template.password)
 				state.request_template.subject.hash = data.state.hash
-				if (data.state.sessions) then (state.events = data.state.sessions.map(create_event))
 				state.response_state = data.state
+				if (data.state.sessions) then (state.events = data.state.sessions.map(create_event))
 				state.dicts.locations = jf.reduce(data.state.locations, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, id.toString(), name.toString()))
 				state.dicts.instruments = jf.reduce(data.state.instruments, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, id.toString(), name.toString()))
 				state.dicts.bands = jf.reduce(data.state.bands, {}, (band, acc) -> jf.put_in(acc, band.id.toString(), band))

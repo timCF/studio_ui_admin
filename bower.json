@@ -34,6 +34,7 @@
     "toastr": "^2.1.2",
     "jquery-ui-bootstrap": "^0.2.5",
     "tablesorter": "jquery.tablesorter#^2.26.5",
-    "bootstrap-tagsinput": "^0.8.0"
+    "bootstrap-tagsinput": "^0.8.0",
+    "color-js": "timCF/color-js#40cbbe38b02fa2af5ada1ecda8909592cae34b79"
   }
 }

@@ -191,7 +191,7 @@ module.exports =
 		st.enabled = true
 		st.stamp = null
 		st
-	check_phone: (str) -> not(not(str.match(/\+\d\d\d\d\d\d\d\d\d\d\d/)))
+	check_phone: (str) -> not(not(str.match(/^\d\d\d\d\d\d\d\d\d\d\d$/)))
 	merge: (target, obj) -> jf.reduce(obj, target, (k,v,acc) -> acc[k] = v ; acc)
 	timeout: (ttl, func) -> setTimeout(func, ttl)
 	new_group_from_session: (state) ->

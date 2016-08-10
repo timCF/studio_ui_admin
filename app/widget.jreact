@@ -230,7 +230,7 @@ mixin group_popup()
 								div.col-xs-12.mt.input-group
 									span.form-control.btn.disabled= "контакты"
 								each k in Object.keys(state.new_band.contacts)
-									- var placeholder = ((k == "phones") ? "+7xxxxxxxxxx" : "")
+									- var placeholder = ((k == "phones") ? "8xxxxxxxxxx" : "")
 									div.col-xs-12.mt.input-group.text-left
 										span.input-group-addon= state.verbose.contacts[k]
 										input.form-control(id="contacts-list-"+k type="text" data-role="tagsinput" defaultValue=state.new_band.contacts[k].join(",") placeholder=placeholder)

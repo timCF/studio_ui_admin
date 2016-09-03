@@ -88,12 +88,12 @@ module.exports = (utils, state) ->
 				state.request_template.subject.hash = data.state.hash
 				state.response_state = data.state
 				if (data.state.sessions) then (state.events = data.state.sessions.map(create_event))
-				state.dicts.locations = jf.reduce(data.state.locations, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, id.toString(), name.toString()))
-				state.dicts.instruments = jf.reduce(data.state.instruments, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, id.toString(), name.toString()))
-				state.dicts.bands = jf.reduce(data.state.bands, {}, (band, acc) -> jf.put_in(acc, band.id.toString(), band))
-				state.dicts.instruments = jf.reduce(data.state.instruments, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, id.toString(), name.toString()))
-				state.dicts.rooms = jf.reduce(data.state.rooms, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, id.toString(), name.toString()))
-				state.rooms_of_locations = jf.reduce(data.state.rooms, {}, ({id: id, location_id: lid}, acc) -> jf.put_in(acc, id.toString(), lid.toString()))
+				state.dicts.locations = jf.reduce(data.state.locations, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, [id.toString()], name.toString()))
+				state.dicts.instruments = jf.reduce(data.state.instruments, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, [id.toString()], name.toString()))
+				state.dicts.bands = jf.reduce(data.state.bands, {}, (band, acc) -> jf.put_in(acc, [band.id.toString()], band))
+				state.dicts.instruments = jf.reduce(data.state.instruments, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, [id.toString()], name.toString()))
+				state.dicts.rooms = jf.reduce(data.state.rooms, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, [id.toString()], name.toString()))
+				state.rooms_of_locations = jf.reduce(data.state.rooms, {}, ({id: id, location_id: lid}, acc) -> jf.put_in(acc, [id.toString()], lid.toString()))
 				state.ids.admin = state.response_state.admins.filter((el) -> return (el.login == state.request_template.login) && (el.password == state.request_template.password))[0].id
 		if state.callbacks.msg then state.callbacks.msg(state, data)
 		if not(render_started)

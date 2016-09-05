@@ -7,6 +7,7 @@ module.exports = {
 			room_id: "комната",
 			instruments_ids: "инструменты",
 			band_id: "группа",
+			band_description: "описание группы",
 			callback: "перезвонить?",
 			status: "статус",
 			amount: "сумма",

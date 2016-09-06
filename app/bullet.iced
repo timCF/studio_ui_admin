@@ -35,12 +35,13 @@ module.exports = (utils, state) ->
 			newstate.rnd = state.rnd
 			if state.calendar
 				$(state.calendar).fullCalendar('removeEvents')
-				state.events.forEach((el) ->
+				lst = state.events.filter((el) ->
 					room_pred = ((el.room_id.toString() == state.ids.room.toString()) or ((state.ids.room == false) and (state.ids.location == false)))
 					location_pred = ((state.ids.room == false) and ((state.rooms_of_locations[el.room_id.toString()] == state.ids.location.toString()) or (state.ids.location == false)))
-					if (room_pred or location_pred) then $(state.calendar).fullCalendar( 'renderEvent', el, true ))
-			console.log("re-render events ... new state is")
-			console.log(state)
+					(room_pred or location_pred))
+				$(state.calendar).fullCalendar( 'addEventSource', lst)
+				console.log("re-render "+lst.length.toString()+" events ... new state is")
+				console.log(state)
 			setTimeout((() -> utils.rerender_events_coroutine(newstate)), 500)
 		else
 			setTimeout((() -> utils.rerender_events_coroutine(prevstate)), 500)

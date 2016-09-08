@@ -210,14 +210,10 @@ mixin group_popup()
 									- var defval = Imuta.access_in(state, this_path)
 									div.col-xs-12.mt.input-group
 										span.input-group-addon= k.transl
-										if (k.key == "name") && band.id
-											span.form-control= band.name
-										else if (k.key == "name")
-											input.form-control(placeholder="имя группы" type="text" onChange=utils.view_set(state, this_path))
-										else if (k.key == "person") && band.id
-											span.form-control= band.person
+										if (k.key == "name")
+											input.form-control(placeholder="имя группы" type="text" onChange=utils.view_set(state, this_path) defaultValue=band.name)
 										else if (k.key == "person")
-											input.form-control(placeholder="имя лица" type="text" onChange=utils.view_set(state, this_path))
+											input.form-control(placeholder="имя лица" type="text" onChange=utils.view_set(state, this_path) defaultValue=band.person)
 										else if (k.key == "kind")
 											- var kind = Imuta.get_in(state, this_path)
 											- var title = (kind ? state.verbose.band_kind[kind] : "не выбрано")

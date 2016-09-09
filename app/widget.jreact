@@ -88,7 +88,7 @@ mixin select_instruments_ids(location_id)
 			else
 				option(value=el.id)= el.name
 mixin session_exists()
-	- var fields = ["id","room_id","instruments_ids","band_id","callback","status","amount","description"]
+	- var fields = ["id","room_id","instruments_ids","band_id","callback","status","price","amount","description"]
 	each k in fields
 		- var transl = state.verbose.session[k]
 		div.col-xs-12.mt.input-group
@@ -107,12 +107,14 @@ mixin session_exists()
 					span.myicon(class=(state.new_session.callback ? "fa fa-check" : "fa fa-ban") aria-hidden="true")
 			else if (k == "status")
 				+selectitems(["SS_awaiting_first", "SS_closed_ok", "SS_canceled_soft", "SS_canceled_hard"], ["new_session","status"], state.verbose.session_status)
+			else if (k == "price")
+				input.form-control(type="number" onChange=utils.view_set(state, ["new_session","price"]) defaultValue=state.new_session.price.toString())
 			else if (k == "amount")
 				input.form-control(type="number" onChange=utils.view_set(state, ["new_session","amount"]) defaultValue=state.new_session.amount.toString())
 			else if (k == "description")
 				input.form-control(type="text" onChange=utils.view_set(state, ["new_session","description"]) defaultValue=utils.view_get(state, ["new_session","description"]))
 mixin session_new()
-	- var fields = ["room_id","instruments_ids","band_id","band_description","callback","description"]
+	- var fields = ["room_id","instruments_ids","band_id","band_balance","band_description","callback","description"]
 	- var this_band = (state.new_session.band_id ? state.response_state.bands.filter(function(el){return el.id.toString() == state.new_session.band_id.toString();})[0] : "не выбрана")
 	each k in fields
 		- var transl = state.verbose.session[k]
@@ -130,6 +132,8 @@ mixin session_new()
 				span.input-group-btn(data-toggle="tooltip" data-placement="bottom" title="новая" onClick=utils.new_group_from_session(state))
 					button.btn.btn-danger.color2(type="button")
 						span.myicon(class="fa fa-plus-square" aria-hidden="true")
+			else if (k == "band_balance")
+				span.form-control= (Imuta.is_map(this_band) ? this_band.balance.toString() : this_band)
 			else if (k == "band_description")
 				span.form-control= (Imuta.is_map(this_band) ? this_band.description : this_band)
 			else if (k == "callback")

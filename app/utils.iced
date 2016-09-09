@@ -57,6 +57,7 @@ module.exports =
 		subj.callback = false
 		subj.status = 'SS_awaiting_first'
 		subj.amount = 0
+		subj.price = 0
 		subj.description = ''
 		subj.ordered_by = 'SO_admin'
 		subj.admin_id_open = state.ids.admin

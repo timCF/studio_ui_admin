@@ -84,6 +84,7 @@ module.exports = (utils, state) ->
 				utils.notice(data.message)
 			when "RS_refresh" then (if state.response_state then utils.CMD_get_state())
 			when "RS_ok_state"
+				if data.state.sessions then data.state.sessions = data.state.sessions.filter((el) -> el.status != "SS_canceled_soft")
 				store.set("login", state.request_template.login)
 				store.set("password", state.request_template.password)
 				state.request_template.subject.hash = data.state.hash

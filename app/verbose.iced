@@ -10,7 +10,7 @@ module.exports = {
 			band_description: "описание группы",
 			callback: "перезвонить?",
 			status: "статус",
-			amount: "сумма",
+			amount: "внесено в кассу",
 			description: "комментарий",
 			ordered_by: "заказано",
 			admin_id_open: "админ открывший",

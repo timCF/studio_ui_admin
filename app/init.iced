@@ -86,6 +86,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			{key: "calendar_main", icon: "fa-calendar", tt: "календарь", style: "color4"},
 			{key: "edit_groups", icon: "fa-users", tt: "группы", style: "color5"},
 			{key: "week_template", icon: "fa-database", tt: "постоянка", style: "color6"},
+			{key: "statistics", icon: "fa-line-chart", tt: "статистика", style: "color7"},
 		],
 		groups_header: [
 			{key: "name", transl: "группа"},

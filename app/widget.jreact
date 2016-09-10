@@ -328,6 +328,17 @@ mixin week_template_popup()
 						if state.new_week_template && state.new_week_template.id
 							button.btn.btn-danger.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="удалить" onClick=utils.week_template_disable(state))
 								span.myicon(class="fa fa-trash" aria-hidden="true")
+mixin statistics_component()
+	div.container-fluid.mt
+		div.row.text-center
+			div.col-xs-12.form-inline(id="datepair")
+				input.form-control.date.start(type="text" placeholder="дата начала")
+				input.form-control.time.start.hidden(type="text" placeholder="время начала")
+				input.form-control.time.end.hidden(type="text" placeholder="время окончания")
+				input.form-control.date.end(type="text" placeholder="дата окончания")
+				button.btn.btn-primary.ml(data-toggle="tooltip" data-placement="bottom" title="искать" onClick=utils.notice("hello"))
+					span.myicon(class="fa fa-search" aria-hidden="true")
+				
 //
 //	PAGE CONTENT
 //
@@ -342,5 +353,7 @@ if state.response_state
 	else if (state.current_page == "week_template")
 		+week_template_table()
 		+week_template_popup()
+	else if (state.current_page == "statistics")
+		+statistics_component()
 else
 	+auth

@@ -9,8 +9,10 @@ module.exports =
 	view_put: (state, path, data) -> Imuta.update_in(state, path, (_) -> data)
 	view_put_render: (state, path, data) ->
 		utils = @
+		Imuta.update_in(state, path, (_) -> null)
+		await utils.render(defer dummy)
 		Imuta.update_in(state, path, (_) -> data)
-		utils.render()
+		await utils.render(defer dummy)
 	view_set: (state, path, ev) ->
 		if (ev? and ev.target? and ev.target.value?)
 			subj = ev.target.value

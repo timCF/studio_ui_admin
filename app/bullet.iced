@@ -7,16 +7,18 @@ module.exports = (utils, state) ->
 		msg.password = state.request_template.password
 		msg.cmd = 'CMD_ping'
 		msg
-	create_event = ({id: id, time_from: time_from, time_to: time_to, room_id: room_id, status: status}) ->
+	create_event = ({id: id, time_from: time_from, time_to: time_to, room_id: room_id, status: status, band_id: band_id}) ->
 		m_from = moment(time_from * 1000)
 		m_to = moment(time_to * 1000)
 		percentfill = Math.abs(time_to - time_from) / 10800
 		percentfill = if (percentfill > 1) then 1 else percentfill
 		rooms = jf.get_in(state, ["response_state","rooms"])
 		this_room = if jf.is_list(rooms) then rooms.filter(({id: rid}) -> rid.compare(room_id) == 0)[0] else null
+		bands = jf.get_in(state, ["response_state","bands"])
+		this_band = if jf.is_list(bands) then bands.filter(({id: id}) -> id.compare(band_id) == 0)[0] else null
 		{
 			id: id,
-			title: m_from.format('HH:mm')+" - "+m_to.format('HH:mm'),
+			title: m_from.format('HH:mm')+" - "+m_to.format('HH:mm')+(if this_band then (" "+this_band.name) else ""),
 			start: m_from.format('YYYY-MM-DD'),
 			end: m_to.format('YYYY-MM-DD'),
 			percentfill: percentfill,

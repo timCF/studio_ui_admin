@@ -212,14 +212,14 @@ module.exports =
 			await utils.render(defer dummy)
 			state.current_page = "edit_groups"
 			await utils.render(defer dummy)
-			utils.timeout(500, () ->
+			utils.timeout(1000, () ->
 				back_to_calendar = () ->
 					await utils.render(defer dummy)
 					state.current_page = "calendar_main"
 					await utils.render(defer dummy)
 					state.new_session = this_session
 					await utils.render(defer dummy)
-					utils.timeout(500, () ->
+					utils.timeout(1000, () ->
 						["start","end"].forEach((key) ->
 							$('#datepair .date.'+key).datepicker('setDate', datepairval.date[key])
 							$('#datepair .time.'+key).timepicker('setTime', datepairval.time[key]))
@@ -254,7 +254,7 @@ module.exports =
 			await utils.render(defer dummy)
 			state.new_week_template = this_data
 			await utils.render(defer dummy)
-			utils.timeout(500, () ->
+			utils.timeout(1000, () ->
 				ds = utils.minutes2moment(this_data.min_from).toDate()
 				de = utils.minutes2moment(this_data.min_to).toDate()
 				$('#datepair .date.start').datepicker('setDate', ds)
@@ -303,3 +303,19 @@ module.exports =
 					date.setDate(date.getDate() + 1)
 					state.datepairval.date.end = date
 			$('#datepair .date.end').datepicker('setDate', date)
+	statistics_request: (state) ->
+		utils = @
+		ts = if state.datepairval.date.start then (utils.date2moment(state.datepairval.date.start).unix() * 1000) else false
+		te = if state.datepairval.date.end then (utils.date2moment(state.datepairval.date.end).add(1, 'days').unix() * 1000) else false
+		if ((ts and te) and (te > ts))
+			statreq = new utils.proto.StatisticsRequest
+			statreq.time_from = ts
+			statreq.time_to = te
+			if state.ids.location then (statreq.location_id = state.ids.location)
+			if state.ids.room then (statreq.room_id = state.ids.room)
+			msg = utils.newmsg()
+			msg.cmd = 'CMD_statistics'
+			msg.statistics = statreq
+			utils.to_server(msg)
+		else
+			utils.error("неверный временной интервал")

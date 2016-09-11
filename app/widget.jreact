@@ -336,7 +336,7 @@ mixin statistics_component()
 				input.form-control.time.start.hidden(type="text" placeholder="время начала")
 				input.form-control.time.end.hidden(type="text" placeholder="время окончания")
 				input.form-control.date.end(type="text" placeholder="дата окончания")
-				button.btn.btn-primary.ml(data-toggle="tooltip" data-placement="bottom" title="искать" onClick=utils.notice("hello"))
+				button.btn.btn-primary.ml(data-toggle="tooltip" data-placement="bottom" title="выгрузить" onClick=utils.statistics_request(state))
 					span.myicon(class="fa fa-search" aria-hidden="true")
 				
 //

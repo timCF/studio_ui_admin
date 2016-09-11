@@ -1,4 +1,13 @@
 module.exports = {
+		statistics: {
+			cash_prices: "счетов выставлено на",
+			cash_input: "внесено в кассу",
+			sessions_all: "репетиций всего",
+			sessions_opened: "репетиций не закрыто",
+			sessions_closed: "репетиций закрыто",
+			sessions_cancel_soft: "мягких отмен репетиций",
+			sessions_cancel_hard: "жёстких отмен репетиций"
+		},
 		session: {
 			id: "заказ №",
 			time_from: "начало",

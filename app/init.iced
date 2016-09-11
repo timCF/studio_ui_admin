@@ -65,6 +65,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		# this is custom callback, function (message, state)
 		# called on new message from server for dynamic smart popups
 		dicts: {},
+		statistics: false,
 		mutex: false,
 		rnd: Math.random().toString(),
 		colors: {

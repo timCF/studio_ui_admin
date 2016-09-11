@@ -88,7 +88,9 @@ mixin select_instruments_ids(location_id)
 			else
 				option(value=el.id)= el.name
 mixin session_exists()
-	- var fields = ["id","room_id","instruments_ids","band_id","callback","status","price","amount","description"]
+	- var fields = ["id","room_id","instruments_ids","band_id","band_balance","callback","status","price","amount","description"]
+	- var this_band = state.response_state.bands.filter(function(el){return el.id.toString() == state.new_session.band_id.toString();})[0]
+	- var bstyle = ((Imuta.is_map(this_band) && (this_band.balance < 0)) ? "alertcolor" : "")
 	each k in fields
 		- var transl = state.verbose.session[k]
 		div.col-xs-12.mt.input-group
@@ -100,8 +102,9 @@ mixin session_exists()
 			else if (k == "instruments_ids")
 				+select_instruments_ids(state.rooms_of_locations[state.new_session.room_id])
 			else if (k == "band_id")
-				- var this_band = state.response_state.bands.filter(function(el){return el.id.toString() == state.new_session.band_id.toString();})[0]
 				span.form-control= (this_band.name+" "+this_band.person+" "+this_band.contacts.phones.join(" "))
+			else if (k == "band_balance")
+				span.form-control(class=bstyle)= (Imuta.is_map(this_band) ? this_band.balance.toString() : this_band)
 			else if (k == "callback")
 				div.btn-default.form-control(onClick=utils.view_swap(state, ["new_session","callback"]))
 					span.myicon(class=(state.new_session.callback ? "fa fa-check" : "fa fa-ban") aria-hidden="true")
@@ -116,6 +119,7 @@ mixin session_exists()
 mixin session_new()
 	- var fields = ["room_id","instruments_ids","band_id","band_balance","band_description","callback","description"]
 	- var this_band = (state.new_session.band_id ? state.response_state.bands.filter(function(el){return el.id.toString() == state.new_session.band_id.toString();})[0] : "не выбрана")
+	- var bstyle = ((Imuta.is_map(this_band) && (this_band.balance < 0)) ? "alertcolor" : "")
 	each k in fields
 		- var transl = state.verbose.session[k]
 		div.col-xs-12.mt.input-group
@@ -133,7 +137,7 @@ mixin session_new()
 					button.btn.btn-danger.color2(type="button")
 						span.myicon(class="fa fa-plus-square" aria-hidden="true")
 			else if (k == "band_balance")
-				span.form-control= (Imuta.is_map(this_band) ? this_band.balance.toString() : this_band)
+				span.form-control(class=bstyle)= (Imuta.is_map(this_band) ? this_band.balance.toString() : this_band)
 			else if (k == "band_description")
 				span.form-control= (Imuta.is_map(this_band) ? this_band.description : this_band)
 			else if (k == "callback")
@@ -338,7 +342,20 @@ mixin statistics_component()
 				input.form-control.date.end(type="text" placeholder="дата окончания")
 				button.btn.btn-primary.ml(data-toggle="tooltip" data-placement="bottom" title="выгрузить" onClick=utils.statistics_request(state))
 					span.myicon(class="fa fa-search" aria-hidden="true")
-				
+		div.row.text-center.mt
+			if state.statistics
+				- var keys = Object.keys(state.verbose.statistics)
+				div.col-xs-12
+					table.table-special-sorted
+						thead
+							tr
+								th= " "
+								th= " "
+						tbody
+							each k in keys
+								tr
+									td.text-center= state.verbose.statistics[k].toString()
+									td.text-center= state.statistics[k].toString()
 //
 //	PAGE CONTENT
 //

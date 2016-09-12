@@ -63,7 +63,7 @@ module.exports =
 		subj.description = ''
 		subj.ordered_by = 'SO_admin'
 		subj.admin_id_open = state.ids.admin
-		subj.admin_id_close = 0
+		subj.admin_id_close = 1
 		subj.transaction_id = 0
 		subj
 	clone_proto: (data, datatype) ->

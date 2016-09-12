@@ -88,16 +88,14 @@ mixin select_instruments_ids(location_id)
 			else
 				option(value=el.id)= el.name
 mixin session_exists()
-	- var fields = ["id","room_id","instruments_ids","band_id","band_balance","callback","status","price","amount","description"]
+	- var fields = ["room_id","instruments_ids","band_id","band_balance","callback","status","price","amount","description"]
 	- var this_band = state.response_state.bands.filter(function(el){return el.id.toString() == state.new_session.band_id.toString();})[0]
 	- var bstyle = ((Imuta.is_map(this_band) && (this_band.balance < 0)) ? "alertcolor" : "")
 	each k in fields
 		- var transl = state.verbose.session[k]
 		div.col-xs-12.mt.input-group
 			span.input-group-addon= transl
-			if (k == "id")
-				span.form-control= state.new_session.id.toString()
-			else if (k == "room_id")
+			if (k == "room_id")
 				+select_room_location(state.new_session.room_id)
 			else if (k == "instruments_ids")
 				+select_instruments_ids(state.rooms_of_locations[state.new_session.room_id])
@@ -116,6 +114,28 @@ mixin session_exists()
 				input.form-control(type="number" onChange=utils.view_set(state, ["new_session","amount"]) defaultValue=state.new_session.amount.toString())
 			else if (k == "description")
 				input.form-control(type="text" onChange=utils.view_set(state, ["new_session","description"]) defaultValue=utils.view_get(state, ["new_session","description"]))
+	div.panel-group.mt(id="accordion")
+		div.panel.panel-default
+			a(data-toggle="collapse" data-parent="#accordion" href="#session_extra")
+				div.panel-heading
+					h4.panel-title= "дополнительно"
+			div.panel-collapse.collapse(id="session_extra")
+				div.panel-body
+					- var fields = ["id","admin_id_open","admin_id_close","stamp"]
+					each k in fields
+						- var transl = state.verbose.session[k]
+						div.col-xs-12.mt.input-group
+							span.input-group-addon= transl
+							if (k == "id")
+								span.form-control= state.new_session.id.toString()
+							else if (k == "admin_id_open")
+								- var this_admin = state.response_state.admins.filter(function(el){return el.id.toString() == state.new_session.admin_id_open.toString();})[0]
+								span.form-control= this_admin.name
+							else if (k == "admin_id_close")
+								- var this_admin = state.response_state.admins.filter(function(el){return el.id.toString() == state.new_session[k].toString();})[0]
+								span.form-control= this_admin.name
+							else if (k == "stamp")
+								span.form-control= moment(state.new_session.stamp * 1000).format('YYYY-MM-DD HH:mm:ss')
 mixin session_new()
 	- var fields = ["room_id","instruments_ids","band_id","band_balance","band_description","callback","description"]
 	- var this_band = (state.new_session.band_id ? state.response_state.bands.filter(function(el){return el.id.toString() == state.new_session.band_id.toString();})[0] : "не выбрана")

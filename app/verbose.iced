@@ -27,7 +27,12 @@ module.exports = {
 			admin_id_open: "админ открывший",
 			admin_id_close: "админ закрывший",
 			transaction_id: "транзакция",
-			stamp: "время"
+			stamp: "изменено"
+		},
+		session_ordered_by: {
+			SO_auto: "автомат",
+			SO_admin: "админ",
+			SO_self: "пользователь",
 		},
 		session_status: {
 			SS_awaiting_last: "последний в очереди",

@@ -19,6 +19,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		weekStart: 1,
 	}
 	calendar_opts = {
+		height: "auto",
 		lang: 'ru',
 		firstDay: 1,
 		dayClick: ((date, _, __) ->

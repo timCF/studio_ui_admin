@@ -30,7 +30,7 @@ module.exports = (utils, state) ->
 	# this shit is one way to refresh events on calendar ...
 	utils.rerender_events_coroutine = (prevstate) ->
 		# rm html elements and create new state ...
-		newstate = jf.reduce(state, {}, (k,v,acc) -> (if (k in ["workday","datepair","calendar","datepairval"]) then acc else jf.put_in(acc, [k], jf.clone(v))))
+		newstate = jf.reduce(state, {}, (k,v,acc) -> (if (k in ["workday","datepair","calendar","datepairval","new_session"]) then acc else jf.put_in(acc, [k], jf.clone(v))))
 		newstate.state_calendar_flag = not(state.calendar)
 		if not(jf.equal(prevstate, newstate))
 			state.rnd = Math.random().toString()

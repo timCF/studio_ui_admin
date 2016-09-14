@@ -303,6 +303,8 @@ mixin week_template_table()
 												span= state.dicts.bands[data].person
 										else if (k == "min_from") || (k == "min_to")
 											td.text-center= utils.minutes2moment(data).format('HH:mm')
+										else if (k == "active_from")
+											td.text-center= moment(data * 1000).format('YYYY-MM-DD')
 										else
 											td.text-center= data.toString()
 mixin week_template_popup()
@@ -341,6 +343,8 @@ mixin week_template_popup()
 													option(value=el.id)= el.name+" "+el.person+" "+el.contacts.phones.join(" ")
 										else if (k == "description")
 											input.form-control(placeholder="" type="text" onChange=utils.view_set(state, this_path) defaultValue=this_data)
+										else if (k == "active_from")
+											span.form-control= moment(this_data).format('YYYY-MM-DD')
 										else
 											span.form-control= this_data.toString()
 				div.modal-footer

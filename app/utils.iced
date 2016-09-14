@@ -116,6 +116,7 @@ module.exports =
 			st.admin_id = state.ids.admin
 			st.enabled = true
 			st.stamp = null
+			st.active_from = utils.date2moment(state.datepairval.date.start).startOf('day').unix() * 1000
 			msg = utils.newmsg()
 			msg.cmd = 'CMD_week_template_new_edit_from_session'
 			msg.subject.sessions_template = [st]
@@ -193,10 +194,7 @@ module.exports =
 		st.admin_id = state.ids.admin
 		st.enabled = true
 		st.stamp = null
-		#
-		#	TODO : edit active_from
-		#
-		st.active_from = moment().unix() * 1000
+		st.active_from = moment().startOf('day').unix()
 		st
 	check_phone: (str) -> not(not(str.match(/^\d\d\d\d\d\d\d\d\d\d\d$/)))
 	merge: (target, obj) -> jf.reduce(obj, target, (k,v,acc) -> acc[k] = v ; acc)
@@ -254,6 +252,7 @@ module.exports =
 			this_data = utils.clone_proto(el, "SessionTemplate")
 			this_data.band_id = this_band_id
 			this_data.room_id = this_data.room_id.toString()
+			this_data.active_from = this_data.active_from * 1000
 			state.new_week_template = false
 			await utils.render(defer dummy)
 			state.new_week_template = this_data

@@ -61,7 +61,8 @@ module.exports = {
 			room_id: "комната",
 			instruments_ids: "инструменты",
 			band_id: "группа",
-			description: "комментарий"
+			description: "комментарий",
+			active_from: "активно с",
 		},
 		week_days: {
 			WD_default: "любой",

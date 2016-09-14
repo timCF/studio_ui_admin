@@ -139,6 +139,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		try
 			render()
 		catch error
+			utils.error("критическая ошибка, перезагрузите страницу браузера")
 			console.log("RENDER ERROR !!! ", error)
 		finally
 			setTimeout(render_coroutine, 500)

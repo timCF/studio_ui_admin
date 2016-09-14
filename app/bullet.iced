@@ -33,6 +33,21 @@ module.exports = (utils, state) ->
 		newstate = jf.reduce(state, {}, (k,v,acc) -> (if (k in ["workday","datepair","calendar","datepairval","new_session"]) then acc else jf.put_in(acc, [k], jf.clone(v))))
 		newstate.state_calendar_flag = not(state.calendar)
 		if not(jf.equal(prevstate, newstate))
+			#
+			# RERENDER JQ TABLES
+			#
+			savedFilters = $('table').find('.tablesorter-filter').map(() -> @.value || '').get()
+			savedFocus = $('table').find('.tablesorter-filter').map(() -> $(@).is(":focus")).get()
+			$(".table-special-sorted").trigger('updateAll').get()
+			$(".table-special-sorted")
+				.find('.tablesorter-filter')
+				.each((i, el) ->
+					$(el).val(savedFilters[i]).trigger("change")
+					if savedFocus[i] then $(el).focus())
+				.get()
+			#
+			# RERENDER JQ TABLES
+			#
 			state.rnd = Math.random().toString()
 			newstate.rnd = state.rnd
 			if state.calendar

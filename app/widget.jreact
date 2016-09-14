@@ -268,7 +268,7 @@ mixin group_popup()
 							span.myicon(class="fa fa-floppy-o" aria-hidden="true")
 mixin week_template_table()
 	if state.response_state && (state.response_state.sessions_template.length > 0)
-		- var lst = state.response_state.sessions_template
+		- var lst = utils.get_filtered_week_template(state)
 		- var keys = Object.keys(state.verbose.session_template_header)
 		div.container-fluid.mt
 			div.row
@@ -280,7 +280,7 @@ mixin week_template_table()
 									th.text-center= state.verbose.session_template_header[k]
 						tbody
 							each el in lst
-								tr(onClick=utils.week_template_edit(state, el))
+								tr(key="week_template_table"+el.id.toString()+state.rnd onClick=utils.week_template_edit(state, el))
 									each k in keys
 										- var data = el[k]
 										if (k == "week_day")

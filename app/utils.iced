@@ -319,3 +319,9 @@ module.exports =
 			utils.to_server(msg)
 		else
 			utils.error("неверный временной интервал")
+	get_filtered_week_template: (state) ->
+		rid = state.ids.room
+		lid = state.ids.location
+		room_ids = (if rid then [rid] else (if lid then state.response_state.rooms.filter((el) -> el.location_id.compare(lid) == 0) else state.response_state.rooms).map((el) -> el.id))
+		rmap = jf.reduce(room_ids, {}, (id, acc) -> jf.put_in(acc, [id.toString()], true))
+		state.response_state.sessions_template.filter((el) -> rmap[el.room_id.toString()])

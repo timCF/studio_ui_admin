@@ -136,8 +136,12 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		if jf.is_function(cb,1) then cb(state)
 		dummy
 	render_coroutine = () ->
-		render()
-		setTimeout(render_coroutine, 500)
+		try
+			render()
+		catch error
+			console.log("RENDER ERROR !!! ", error)
+		finally
+			setTimeout(render_coroutine, 500)
 	# some compile-time defined utils, frozen
 	utils = Object.freeze(tmp = require("bullet")(require("proto")(require("utils")), state) ; tmp.render = render ; tmp.render_coroutine = render_coroutine ; tmp)
 	# full state structure, frozen

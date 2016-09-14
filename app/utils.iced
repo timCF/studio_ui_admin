@@ -193,6 +193,10 @@ module.exports =
 		st.admin_id = state.ids.admin
 		st.enabled = true
 		st.stamp = null
+		#
+		#	TODO : edit active_from
+		#
+		st.active_from = moment().unix() * 1000
 		st
 	check_phone: (str) -> not(not(str.match(/^\d\d\d\d\d\d\d\d\d\d\d$/)))
 	merge: (target, obj) -> jf.reduce(obj, target, (k,v,acc) -> acc[k] = v ; acc)

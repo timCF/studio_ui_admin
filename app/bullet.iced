@@ -90,8 +90,13 @@ module.exports = (utils, state, constants) ->
 			when "RS_ok_void" then "ok"
 			when "RS_error" then utils.error(data.message)
 			when "RS_warn"
-				constants.sounds.message.play()
-				utils.warn(data.message, 30000)
+				if (not(data.destination_location_id) or not(state.ids.location))
+					constants.sounds.message.play()
+					utils.warn(data.message, 30000)
+				else
+					if data.destination_location_id.some((el) -> el.compare(state.ids.location) == 0)
+						constants.sounds.message.play()
+						utils.warn(data.message, 30000)
 			when "RS_notice"
 				# prevent callback on hiding popups side-effect
 				state.callbacks.close_popup = false

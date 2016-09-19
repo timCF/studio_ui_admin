@@ -1,4 +1,4 @@
-module.exports = (utils, state) ->
+module.exports = (utils, state, constants) ->
 	render_started = false
 	jf = require('jsfunky')
 	newmsg = () ->
@@ -89,6 +89,9 @@ module.exports = (utils, state) ->
 		switch data.status
 			when "RS_ok_void" then "ok"
 			when "RS_error" then utils.error(data.message)
+			when "RS_warn"
+				constants.sounds.message.play()
+				utils.warn(data.message, 30000)
 			when "RS_notice"
 				# prevent callback on hiding popups side-effect
 				state.callbacks.close_popup = false

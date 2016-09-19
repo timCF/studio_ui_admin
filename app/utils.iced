@@ -2,7 +2,11 @@ proto2base64 = require('base64-arraybuffer')
 jf = require("jsfunky")
 module.exports =
 	error: (mess) -> toastr.error(mess)
-	warn: (mess) -> toastr.warning(mess)
+	warn: (mess, duration) ->
+		if duration
+			toastr.warning(mess, undefined, {timeOut: duration, extendedTimeOut: duration})
+		else
+			toastr.warning(mess)
 	notice: (mess) -> toastr.success(mess)
 	info: (mess) -> toastr.info(mess)
 	view_get: (state, path) -> jf.get_in(state, path)

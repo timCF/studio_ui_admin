@@ -58,6 +58,13 @@ document.addEventListener "DOMContentLoaded", (e) ->
 				$('#calendarday').modal())
 	}
 	# state for main function, mutable
+	constants = {
+		sounds: {
+			event: (new Audio('/mp3/event.mp3')),
+			message: (new Audio('/mp3/message.mp3')),
+			unknown: (new Audio('/mp3/unknown.mp3')),
+		}
+	}
 	state = {
 		callbacks: {
 			msg: false,
@@ -144,7 +151,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		finally
 			setTimeout(render_coroutine, 500)
 	# some compile-time defined utils, frozen
-	utils = Object.freeze(tmp = require("bullet")(require("proto")(require("utils")), state) ; tmp.render = render ; tmp.render_coroutine = render_coroutine ; tmp)
+	utils = Object.freeze(tmp = require("bullet")(require("proto")(require("utils")), state, constants) ; tmp.render = render ; tmp.render_coroutine = render_coroutine ; tmp)
 	# full state structure, frozen
 	fullstate = Object.freeze({state: state, utils: utils})
 	react = require("react-dom")

@@ -60,9 +60,9 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	# state for main function, mutable
 	constants = {
 		sounds: {
-			event: (new Audio('/mp3/event.mp3')),
-			message: (new Audio('/mp3/message.mp3')),
-			unknown: (new Audio('/mp3/unknown.mp3')),
+			event: (new Audio('mp3/event.mp3')),
+			message: (new Audio('mp3/message.mp3')),
+			unknown: (new Audio('mp3/unknown.mp3')),
 		}
 	}
 	state = {

@@ -73,5 +73,31 @@ module.exports = {
 			WD_5: "пятница",
 			WD_6: "суббота",
 			WD_7: "воскресенье"
+		},
+		transactions: {
+			id: "№",
+			kind: "тип",
+			subject_id: "субъект",
+			subject_quantity: "кол-во",
+			amount: "сумма",
+			cash_in: "внесено",
+			cash_out: "сдача",
+			description: "описание",
+			admin_id: "админ",
+			stamp: "время",
+		},
+		transaction_kind: {
+			TK_band_room: "комната",
+			TK_band_instrument: "инструмент",
+			TK_band_deposit: "депозит",
+			TK_band_punishment: "штраф",
+			TK_wage_base: "зарплата",
+			TK_wage_bonus: "бонус админа",
+			TK_wage_punishment: "штраф админа",
+			TK_rent: "аренда помещения",
+			TK_buy: "закупка",
+			TK_repair: "ремонт",
+			TK_sell: "продажа",
+			TK_bonus: "бонус",
 		}
 	}

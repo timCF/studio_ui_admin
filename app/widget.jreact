@@ -68,6 +68,9 @@ mixin navbar()
 			if (state.current_page == "week_template")
 				button.btn.btn-danger.btn-lg.color2.ml.mt(data-toggle="tooltip" data-placement="bottom" title="добавить" onClick=utils.week_template_edit(state, utils.new_week_template(state)))
 					span.myicon(class="fa fa-plus-square" aria-hidden="true")
+			if (state.current_page == "transactions")
+				button.btn.btn-danger.btn-lg.color2.ml.mt(data-toggle="tooltip" data-placement="bottom" title="добавить" onClick=utils.new_transaction(state))
+					span.myicon(class="fa fa-plus-square" aria-hidden="true")
 			div.btn-group.ml.mt
 				- var maybe_admin = state.response_state.admins.filter(function(el){return (el.login == state.request_template.login) && (el.password == state.request_template.password);})[0]
 				- var this_admin_name = (maybe_admin ? maybe_admin.name : "anon")
@@ -380,6 +383,52 @@ mixin statistics_component()
 								tr
 									td.text-center= state.verbose.statistics[k].toString()
 									td.text-center= state.statistics[k].toString()
+mixin transactions_component()
+	if state.response_state && (state.response_state.transactions.length > 0)
+		- var lst = state.response_state.transactions
+		- var keys = ["id","kind","subject_id","amount","description","admin_id","stamp"]
+		div.container-fluid.mt
+			div.row
+				div.col-xs-12
+					table.table-special-sorted
+						thead
+							tr
+								each k in keys
+									th.text-center= state.verbose.transactions[k]
+						tbody
+							each el in lst
+								tr
+									each k in keys
+										if (k == "kind")
+											td.text-center= state.verbose.transaction_kind[el[k]]
+										else if ((k == "subject_id") && (["TK_band_room","TK_band_instrument","TK_band_deposit","TK_band_punishment","TK_sell","TK_bonus"].indexOf(el.kind) != -1))
+											td.text-center
+												span= state.dicts.bands[el[k]].name
+												br
+												span= state.dicts.bands[el[k]].person
+												br
+												each phone in state.dicts.bands[el[k]].contacts.phones
+													span= phone
+													br
+										else if (k == "admin_id")
+											td.text-center= state.dicts.admins[el[k]].toString()
+										else if (k == "stamp")
+											td.text-center= moment(el[k] * 1000).format('YYYY-MM-DD HH:mm:ss')
+										else
+											td.text-center= el[k].toString()
+mixin transactions_popup()
+	div.modal.fade(tabIndex="-1" id="transactions_popup")
+		div.modal-dialog.modal-lg
+			div.modal-content
+				div.modal-body
+					div.container-fluid
+						div.row.text-center
+				div.modal-footer
+					div.text-center
+						button.btn.btn-warning.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="закрыть" data-dismiss="modal")
+							span.myicon(class="fa fa-times" aria-hidden="true")
+						button.btn.btn-primary.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="сохранить" onClick=utils.notice("TODO"))
+							span.myicon(class="fa fa-floppy-o" aria-hidden="true")
 //
 //	PAGE CONTENT
 //
@@ -396,5 +445,8 @@ if state.response_state
 		+week_template_popup()
 	else if (state.current_page == "statistics")
 		+statistics_component()
+	else if (state.current_page == "transactions")
+		+transactions_component()
+		+transactions_popup()
 else
 	+auth

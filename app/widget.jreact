@@ -1,6 +1,7 @@
 - var utils = locals.utils
 - var state = locals.state
 - var optionlg = "form-control input-lg text-center noborder"
+- var transaction_kinds = ["TK_band_room","TK_band_instrument","TK_band_deposit","TK_band_punishment","TK_sell","TK_bonus"]
 mixin swapbutton(name, path, style)
 	if state.data && state.data.enabled
 		button.btn.btn-success(class=style onClick=utils.view_swap(state, path))= name
@@ -401,7 +402,7 @@ mixin transactions_component()
 									each k in keys
 										if (k == "kind")
 											td.text-center= state.verbose.transaction_kind[el[k]]
-										else if ((k == "subject_id") && (["TK_band_room","TK_band_instrument","TK_band_deposit","TK_band_punishment","TK_sell","TK_bonus"].indexOf(el.kind) != -1))
+										else if ((k == "subject_id") && (transaction_kinds.indexOf(el.kind) != -1))
 											td.text-center
 												span= state.dicts.bands[el[k]].name
 												br
@@ -423,11 +424,32 @@ mixin transactions_popup()
 				div.modal-body
 					div.container-fluid
 						div.row.text-center
+							if state.new_transaction
+								- var keys = ["kind","subject_id","cash_in","cash_out","description"]
+								each k in keys
+									- var this_path = ["new_transaction", k]
+									- var this_data = Imuta.access_in(state, this_path)
+									div.col-xs-12.mt.input-group
+										span.input-group-addon= state.verbose.transactions[k]
+										if (k == "kind")
+											+selectitems(transaction_kinds, this_path, state.verbose.transaction_kind)
+										else if ((k == "subject_id") && (transaction_kinds.indexOf(state.new_transaction.kind) != -1))
+											- var this_band = (this_data ? state.response_state.bands.filter(function(el){return el.id.toString() == this_data.toString();})[0] : "ничего не выбрано")
+											- var placeholder = (Imuta.is_map(this_band) ? (this_band.name+" "+this_band.person+" "+this_band.contacts.phones.join(" ")) : this_band)
+											select.selectpicker.form-control(onChange=utils.view_set(state, this_path) data-live-search="true" title=placeholder)
+												each el in state.response_state.bands
+													option(value=el.id)= el.name+" "+el.person+" "+el.contacts.phones.join(" ")
+										else if (k == "subject_id")
+											span.form-control= "сначала выберите тип"
+										else if (["cash_in","cash_out"].indexOf(k) != -1)
+											input.form-control(placeholder="" type="number" onChange=utils.view_set(state, this_path) defaultValue=this_data)
+										else if (k == "description")
+											input.form-control(placeholder="" type="text" onChange=utils.view_set(state, this_path) defaultValue=this_data)
 				div.modal-footer
 					div.text-center
 						button.btn.btn-warning.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="закрыть" data-dismiss="modal")
 							span.myicon(class="fa fa-times" aria-hidden="true")
-						button.btn.btn-primary.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="сохранить" onClick=utils.notice("TODO"))
+						button.btn.btn-primary.btn-lg.ml(data-toggle="tooltip" data-placement="bottom" title="сохранить" onClick=utils.new_transaction2server(state))
 							span.myicon(class="fa fa-floppy-o" aria-hidden="true")
 //
 //	PAGE CONTENT

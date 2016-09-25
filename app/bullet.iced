@@ -104,6 +104,7 @@ module.exports = (utils, state, constants) ->
 				$('#calendarday').modal('hide')
 				$('#group_popup').modal('hide')
 				$('#week_template_popup').modal('hide')
+				$('#transactions_popup').modal('hide')
 				utils.notice(data.message)
 			when "RS_info"
 				utils.notice(data.message)

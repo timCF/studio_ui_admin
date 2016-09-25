@@ -1,7 +1,11 @@
 module.exports = {
 		statistics: {
-			cash_prices: "счетов выставлено на",
-			cash_input: "внесено в кассу",
+			all_cash_prices: "счетов выставлено (всего)",
+			all_cash_input: "внесено в кассу (всего)",
+			cash_prices: "счетов выставлено (репетиции)",
+			cash_input: "внесено в кассу (репетиции)",
+			transactions_cash_prices: "счетов выставлено (транзакции)",
+			transactions_cash_input: "внесено в кассу (транзакции)",
 			sessions_all: "репетиций всего",
 			sessions_opened: "репетиций не закрыто",
 			sessions_closed: "репетиций закрыто",
@@ -84,6 +88,7 @@ module.exports = {
 			cash_out: "итоговая цена",
 			description: "описание",
 			admin_id: "админ",
+			location_id: "база",
 			stamp: "время",
 		},
 		transaction_kind: {

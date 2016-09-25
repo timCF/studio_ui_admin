@@ -334,19 +334,22 @@ module.exports =
 		state.response_state.sessions_template.filter((el) -> rmap[el.room_id.toString()])
 	new_transaction: (state) ->
 		utils = @
-		state.new_transaction = null
-		await utils.render(defer dummy)
-		state.new_transaction = new utils.proto.Transaction
-		state.new_transaction.kind = false
-		state.new_transaction.subject_id = false
-		state.new_transaction.subject_quantity = 1
-		state.new_transaction.amount = 0
-		state.new_transaction.cash_in = 0
-		state.new_transaction.cash_out = 0
-		state.new_transaction.description = ""
-		state.new_transaction.admin_id = state.ids.admin
-		await utils.render(defer dummy)
-		$('#transactions_popup').modal()
+		if not(state.ids.location)
+			utils.error("выберите базу")
+		else
+			state.new_transaction = null
+			await utils.render(defer dummy)
+			state.new_transaction = new utils.proto.Transaction
+			state.new_transaction.kind = false
+			state.new_transaction.subject_id = false
+			state.new_transaction.subject_quantity = 1
+			state.new_transaction.amount = 0
+			state.new_transaction.cash_in = 0
+			state.new_transaction.cash_out = 0
+			state.new_transaction.description = ""
+			state.new_transaction.admin_id = state.ids.admin
+			await utils.render(defer dummy)
+			$('#transactions_popup').modal()
 	new_transaction2server: (state) ->
 		utils = @
 		subj = state.new_transaction
@@ -360,10 +363,13 @@ module.exports =
 			utils.error("денежные суммы должны быть числами больше нуля либо равными нулю")
 		else if not(subj.description)
 			utils.error("обязательно подробно опишите транзакцию")
+		else if not(state.ids.location)
+			utils.error("выберите базу")
 		else
 			subj.cash_in = cash_in
 			subj.cash_out = cash_out
 			subj.amount = cash_in - cash_out
+			subj.location_id = state.ids.location
 			msg = utils.newmsg()
 			msg.cmd = 'CMD_new_transaction'
 			msg.subject.transactions = [subj]

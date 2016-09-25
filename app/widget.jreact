@@ -387,7 +387,7 @@ mixin statistics_component()
 mixin transactions_component()
 	if state.response_state && (state.response_state.transactions.length > 0)
 		- var lst = state.response_state.transactions
-		- var keys = ["id","kind","subject_id","cash_out","cash_in","description","admin_id","stamp"]
+		- var keys = ["id","kind","subject_id","cash_out","cash_in","description","admin_id","location_id","stamp"]
 		div.container-fluid.mt
 			div.row
 				div.col-xs-12
@@ -415,6 +415,8 @@ mixin transactions_component()
 											td.text-center= state.dicts.admins[el[k]].toString()
 										else if (k == "stamp")
 											td.text-center= moment(el[k] * 1000).format('YYYY-MM-DD HH:mm:ss')
+										else if (k == "location_id")
+											td.text-center= state.dicts.locations[el[k]]
 										else
 											td.text-center= el[k].toString()
 mixin transactions_popup()

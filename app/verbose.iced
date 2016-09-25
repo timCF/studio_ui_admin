@@ -81,7 +81,7 @@ module.exports = {
 			subject_quantity: "кол-во",
 			amount: "сумма",
 			cash_in: "внесено в кассу",
-			cash_out: "взято из кассы",
+			cash_out: "итоговая цена",
 			description: "описание",
 			admin_id: "админ",
 			stamp: "время",

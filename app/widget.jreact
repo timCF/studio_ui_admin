@@ -1,7 +1,7 @@
 - var utils = locals.utils
 - var state = locals.state
 - var optionlg = "form-control input-lg text-center noborder"
-- var transaction_kinds = ["TK_band_room","TK_band_instrument","TK_band_deposit","TK_band_punishment","TK_sell","TK_bonus"]
+- var transaction_kinds = ["TK_band_instrument","TK_band_deposit","TK_band_punishment","TK_sell","TK_bonus"]
 mixin swapbutton(name, path, style)
 	if state.data && state.data.enabled
 		button.btn.btn-success(class=style onClick=utils.view_swap(state, path))= name

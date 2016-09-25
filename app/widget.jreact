@@ -386,7 +386,7 @@ mixin statistics_component()
 									td.text-center= state.statistics[k].toString()
 mixin transactions_component()
 	if state.response_state && (state.response_state.transactions.length > 0)
-		- var lst = state.response_state.transactions
+		- var lst = state.response_state.transactions.filter(function(el){return (state.ids.location ? (el.location_id.compare(state.ids.location) == 0) : true);})
 		- var keys = ["id","kind","subject_id","cash_out","cash_in","description","admin_id","location_id","stamp"]
 		div.container-fluid.mt
 			div.row

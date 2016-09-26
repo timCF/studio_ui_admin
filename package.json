@@ -1,5 +1,6 @@
 {
-  "name": "nextgenjs",
+  "name": "studio-admin",
+  "main": "electron/main.js",
   "description": "Description",
   "author": "Your Name",
   "version": "0.1.0",

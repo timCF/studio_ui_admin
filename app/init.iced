@@ -147,11 +147,10 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	render_coroutine = () ->
 		try
 			render()
-		catch error
-			utils.error("критическая ошибка, перезагрузите страницу браузера")
-			console.log("RENDER ERROR !!! ", error)
-		finally
 			setTimeout(render_coroutine, 500)
+		catch error
+			console.log("RENDER ERROR !!! ", error)
+			window.location.reload(true)
 	# some compile-time defined utils, frozen
 	utils = Object.freeze(tmp = require("bullet")(require("proto")(require("utils")), state, constants) ; tmp.render = render ; tmp.render_coroutine = render_coroutine ; tmp)
 	# full state structure, frozen

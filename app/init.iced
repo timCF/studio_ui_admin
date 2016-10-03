@@ -22,6 +22,36 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		height: "auto",
 		lang: 'ru',
 		firstDay: 1,
+		monthNames: [
+			"Январь",
+			"Февраль",
+			"Март",
+			"Апрель",
+			"Май",
+			"Июнь",
+			"Июль",
+			"Август",
+			"Сентябрь",
+			"Октябрь",
+			"Ноябрь",
+			"Декабрь",
+		],
+		dayNames: [
+			"Воскресенье",
+			"Понедельник",
+			"Вторник",
+			"Среда",
+			"Четверг",
+			"Пятница",
+			"Суббота",
+		],
+		buttonText: {
+			today: 'сегодня',
+			month: 'месяц',
+			week: 'неделя',
+			day: 'день'
+		},
+		columnFormat: 'dddd',
 		dayClick: ((date, _, __) ->
 			if state.ids.room
 				state.datepairval.time.start = ''

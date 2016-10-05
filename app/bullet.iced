@@ -23,6 +23,7 @@ module.exports = (utils, state, constants) ->
 			end: m_to.format('YYYY-MM-DD'),
 			percentfill: percentfill,
 			room_id: room_id,
+			status: status,
 			color: if not(this_room) then state.colors.sesions[status] else (if (status == "SS_awaiting_first") then this_room.color else net.brehaut.Color(this_room.color).setAlpha(0.3).toString())
 		}
 	long2date = (long) ->
@@ -53,9 +54,10 @@ module.exports = (utils, state, constants) ->
 			if state.calendar
 				$(state.calendar).fullCalendar('removeEvents')
 				lst = state.events.filter((el) ->
+					event_status_pred = (state.sessions_statuses.indexOf(el.status) != -1)
 					room_pred = ((el.room_id.toString() == state.ids.room.toString()) or ((state.ids.room == false) and (state.ids.location == false)))
 					location_pred = ((state.ids.room == false) and ((state.rooms_of_locations[el.room_id.toString()] == state.ids.location.toString()) or (state.ids.location == false)))
-					(room_pred or location_pred))
+					((room_pred or location_pred) and event_status_pred))
 				$(state.calendar).fullCalendar( 'addEventSource', lst)
 				console.log("re-render "+lst.length.toString()+" events ... new state is")
 				console.log(state)
@@ -110,7 +112,7 @@ module.exports = (utils, state, constants) ->
 				utils.notice(data.message)
 			when "RS_refresh" then (if state.response_state then utils.CMD_get_state())
 			when "RS_ok_state"
-				if data.state.sessions then data.state.sessions = data.state.sessions.filter((el) -> el.status != "SS_canceled_soft")
+				# if data.state.sessions then data.state.sessions = data.state.sessions.filter((el) -> el.status != "SS_canceled_soft")
 				store.set("login", state.request_template.login)
 				store.set("password", state.request_template.password)
 				state.request_template.subject.hash = data.state.hash

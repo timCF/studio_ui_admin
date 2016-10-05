@@ -96,6 +96,11 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		}
 	}
 	state = {
+		sessions_statuses: [
+			"SS_awaiting_first",
+			"SS_closed_ok",
+			"SS_canceled_hard",
+		],
 		callbacks: {
 			msg: false,
 			close_popup: false,

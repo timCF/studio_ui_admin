@@ -14,10 +14,10 @@ mixin selectitems(list, path, dict)
 	select.selectpicker.form-control(onChange=utils.view_set(state, path) data-live-search="true" title=placeholder)
 		each el in list
 			option(value=el)= dict[el]
-mixin selectitems_multiple(list, path, dict)
+mixin selectitems_multiple(list, path, dict, customclass)
 	- var currentval = utils.view_get(state, path)
 	- var this_val = (currentval ? currentval : []).map(function(el){return el.toString();})
-	select.selectpicker.form-control(multiple onChange=utils.multiple_select(state, path) data-live-search="true" defaultValue=this_val)
+	select.selectpicker.form-control(multiple class=customclass onChange=utils.multiple_select(state, path) data-live-search="true" defaultValue=this_val)
 		each el in list
 			option(value=el)= dict[el]
 mixin fileinput(path)
@@ -56,6 +56,9 @@ mixin select_room_location(room_id)
 mixin navbar()
 	div.container-fluid
 		div.row.text-center
+			if (state.current_page == "calendar_main")
+				div.btn-group.ml.mt.max_width100px
+					+selectitems_multiple(["SS_awaiting_first", "SS_closed_ok", "SS_canceled_soft", "SS_canceled_hard"], ["sessions_statuses"], state.verbose.session_status, "input-lg")
 			div.btn-group.ml.mt(key=state.rnd)
 				each el in state.pages_list
 					if (el.key != state.current_page)
@@ -338,7 +341,7 @@ mixin week_template_popup()
 											+selectitems(room_ids, this_path, state.dicts.rooms)
 										else if (k == "instruments_ids")
 											- var instruments_ids = state.response_state.instruments.filter(function(el){return el.location_id.compare(location_id) == 0;}).map(function(el){return el.id;})
-											+selectitems_multiple(instruments_ids, this_path, state.dicts.instruments)
+											+selectitems_multiple(instruments_ids, this_path, state.dicts.instruments, "")
 										else if (k == "band_id")
 											- var this_band = (this_data ? state.response_state.bands.filter(function(el){return el.id.toString() == this_data.toString();})[0] : "не выбрана")
 											- var placeholder = (Imuta.is_map(this_band) ? (this_band.name+" "+this_band.person+" "+this_band.contacts.phones.join(" ")) : this_band)

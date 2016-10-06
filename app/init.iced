@@ -97,6 +97,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	}
 	state = {
 		is_focused: true,
+		last_click: moment(),
 		sessions_statuses: [
 			"SS_awaiting_first",
 			"SS_closed_ok",
@@ -182,7 +183,9 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		dummy
 	render_coroutine = () ->
 		try
-			if state.is_focused then render()
+			if state.is_focused
+				render()
+				if (moment().diff(state.last_click, 'seconds') > 60) then window.onblur()
 			setTimeout(render_coroutine, 500)
 		catch error
 			console.log("RENDER ERROR !!! ", error)

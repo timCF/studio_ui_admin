@@ -13,9 +13,9 @@ module.exports = (utils, state, constants) ->
 		percentfill = Math.abs(time_to - time_from) / 10800
 		percentfill = if (percentfill > 1) then 1 else percentfill
 		rooms = jf.get_in(state, ["response_state","rooms"])
-		this_room = if state.dicts.rooms_full[room_id.toString()] then state.dicts.rooms_full[room_id.toString()] else null
+		this_room = if (state.dicts.rooms_full and state.dicts.rooms_full[room_id.toString()]) then state.dicts.rooms_full[room_id.toString()] else null
 		bands = jf.get_in(state, ["response_state","bands"])
-		this_band = if state.dicts.bands_full[band_id.toString()] then state.dicts.bands_full[band_id.toString()] else null
+		this_band = if (state.dicts.bands_full and state.dicts.bands_full[band_id.toString()]) then state.dicts.bands_full[band_id.toString()] else null
 		{
 			id: id,
 			title: m_from.format('HH:mm')+" - "+m_to.format('HH:mm')+(if this_band then (" "+this_band.name) else ""),
@@ -114,6 +114,8 @@ module.exports = (utils, state, constants) ->
 			when "RS_ok_state"
 				store.set("login", state.request_template.login)
 				store.set("password", state.request_template.password)
+				["locations", "instruments", "bands", "admins", "rooms"].forEach((k) ->
+					state.dicts[(k+"_full")] = jf.reduce(data.state[k], {}, (el, acc) -> jf.put_in(acc, [el.id.toString()], el)))
 				state.request_template.subject.hash = data.state.hash
 				state.response_state = data.state
 				if (data.state.sessions) then (state.events = data.state.sessions.map(create_event))
@@ -124,8 +126,6 @@ module.exports = (utils, state, constants) ->
 				state.dicts.rooms = jf.reduce(data.state.rooms, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, [id.toString()], name.toString()))
 				state.rooms_of_locations = jf.reduce(data.state.rooms, {}, ({id: id, location_id: lid}, acc) -> jf.put_in(acc, [id.toString()], lid.toString()))
 				state.ids.admin = state.response_state.admins.filter((el) -> return (el.login == state.request_template.login) && (el.password == state.request_template.password))[0].id
-				["locations", "instruments", "bands", "admins", "rooms"].forEach((k) ->
-					state.dicts[(k+"_full")] = jf.reduce(data.state[k], {}, (el, acc) -> jf.put_in(acc, [el.id.toString()], el)))
 			when "RS_statistics"
 				state.statistics = data.statistics
 		if state.callbacks.msg then state.callbacks.msg(state, data)

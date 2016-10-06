@@ -19,3 +19,10 @@ module.exports = (state, utils) ->
 	req.subject = new utils.proto.FullState
 	req.subject.hash = ''
 	state.request_template = req
+	window.onfocus = () ->
+		console.log("window focused")
+		state.is_focused = true
+	window.onblur = () ->
+		console.log("window UNfocused")
+		state.is_focused = false
+		await utils.render(defer dummy)

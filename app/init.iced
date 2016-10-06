@@ -96,6 +96,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		}
 	}
 	state = {
+		is_focused: true,
 		sessions_statuses: [
 			"SS_awaiting_first",
 			"SS_closed_ok",
@@ -181,7 +182,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 		dummy
 	render_coroutine = () ->
 		try
-			render()
+			if state.is_focused then render()
 			setTimeout(render_coroutine, 500)
 		catch error
 			console.log("RENDER ERROR !!! ", error)

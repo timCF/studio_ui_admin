@@ -53,8 +53,9 @@ module.exports = (utils, state, constants) ->
 			newstate.rnd = state.rnd
 			if state.calendar
 				$(state.calendar).fullCalendar('removeEvents')
+				active_statuses = jf.reduce(state.sessions_statuses, {}, ((s, acc) -> acc[s] = true ; acc))
 				lst = state.events.filter((el) ->
-					event_status_pred = (state.sessions_statuses.indexOf(el.status) != -1)
+					event_status_pred = active_statuses[el.status]
 					room_pred = ((el.room_id.toString() == state.ids.room.toString()) or ((state.ids.room == false) and (state.ids.location == false)))
 					location_pred = ((state.ids.room == false) and ((state.rooms_of_locations[el.room_id.toString()] == state.ids.location.toString()) or (state.ids.location == false)))
 					((room_pred or location_pred) and event_status_pred))

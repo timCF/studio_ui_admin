@@ -184,14 +184,23 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	render_coroutine = () ->
 		try
 			if state.is_focused
+				["location","room"].forEach((k) ->
+					this_data = if state.ids[k] then state.ids[k].toString() else false
+					if (store.get(k+"_id") != this_data) then store.set(k+"_id", this_data))
 				render()
 				if (moment().diff(state.last_click, 'seconds') > 60) then window.onblur()
+			#
+			# need this shit to prevent memory leaks
+			#
+			if (moment().diff(state.last_click, 'minutes') > 10) then window.location.reload(true)
 			setTimeout(render_coroutine, 500)
 		catch error
 			console.log("RENDER ERROR !!! ", error)
 			window.location.reload(true)
 	# some compile-time defined utils, frozen
 	utils = Object.freeze(tmp = require("bullet")(require("proto")(require("utils")), state, constants) ; tmp.render = render ; tmp.render_coroutine = render_coroutine ; tmp)
+	state.ids.location = utils.maybe_from_store("location_id", false)
+	state.ids.room = utils.maybe_from_store("room_id", false)
 	# full state structure, frozen
 	fullstate = Object.freeze({state: state, utils: utils})
 	react = require("react-dom")
@@ -209,7 +218,11 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			console.log("render datepair")
 	render_calendar = () ->
 		calendar = document.getElementById('calendar')
-		if not(calendar) then (state.calendar = false)
+		if state.calendar and not(calendar)
+			$(state.calendar).fullCalendar('destroy')
+			state.calendar.remove()
+			delete state.calendar
+			state.calendar = false
 		if not(state.calendar) and calendar
 			state.calendar = $(calendar).fullCalendar(calendar_opts)
 			console.log("render calendar")

@@ -19,24 +19,22 @@ module.exports = (state, utils) ->
 	req.subject = new utils.proto.FullState
 	req.subject.hash = ''
 	state.request_template = req
-	rm_bootstrap_backdrop = () ->
+	post_render = () ->
+		Logger.debug("post_render page")
 		await utils.render(defer dummy)
-		#$('body').removeClass('modal-open')
-		#$('.modal-backdrop').remove()
-		#await utils.render(defer dummy)
-		#$('body').removeClass('modal-open')
-		#$('.modal-backdrop').remove()
+		Logger.debug("post_render events")
+		utils.rerender_events_coroutine_process(null)
+		Logger.debug("post_render finished")
 	window.onclick = () ->
 		state.last_click = moment()
 		if not(state.is_focused) then window.onfocus()
 	window.onfocus = () ->
 		console.log("window focused")
-		rm_bootstrap_backdrop()
 		state.last_click = moment()
 		state.is_focused = true
-		rm_bootstrap_backdrop()
+		post_render()
 	window.onblur = () ->
 		console.log("window UNfocused")
-		rm_bootstrap_backdrop()
 		state.is_focused = false
-		rm_bootstrap_backdrop()
+		post_render()
+	Logger.useDefaults({formatter: (messages, context) -> messages.unshift(moment().format('YYYY-MM-DD HH:mm:ss'))})

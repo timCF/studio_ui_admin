@@ -29,7 +29,7 @@ module.exports = (utils, state, constants) ->
 	long2date = (long) ->
 		moment(1000 * parseInt(long.toString())).format('YYYY-MM-DD HH:mm:ss')
 	# this shit is one way to refresh events on calendar ...
-	rerender_events_coroutine_process = (prevstate) ->
+	utils.rerender_events_coroutine_process = (prevstate) ->
 		# rm html elements and create new state ...
 		newstate = jf.reduce(state, {}, (k,v,acc) -> (if (k in ["workday","datepair","calendar","datepairval","new_session","last_click"]) then acc else jf.put_in(acc, [k], jf.clone(v))))
 		newstate.state_calendar_flag = not(state.calendar)
@@ -67,7 +67,7 @@ module.exports = (utils, state, constants) ->
 			prevstate
 	utils.rerender_events_coroutine = (this_state) ->
 		try
-			this_state = if state.is_focused then rerender_events_coroutine_process(this_state) else this_state
+			this_state = if state.is_focused then utils.rerender_events_coroutine_process(this_state) else this_state
 			setTimeout((() -> utils.rerender_events_coroutine(this_state)), 500)
 		catch error
 			console.log("RENDER EVENTS ERROR !!! ", error)

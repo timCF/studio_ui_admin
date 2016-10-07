@@ -52,7 +52,8 @@ module.exports = (utils, state, constants) ->
 			state.rnd = Math.random().toString()
 			newstate.rnd = state.rnd
 			if state.calendar
-				$(state.calendar).fullCalendar('removeEvents')
+				$(state.calendar).fullCalendar( 'removeEventSources' )
+				$(state.calendar).fullCalendar( 'removeEvents' )
 				active_statuses = jf.reduce(state.sessions_statuses, {}, ((s, acc) -> acc[s] = true ; acc))
 				lst = state.events.filter((el) ->
 					event_status_pred = active_statuses[el.status]

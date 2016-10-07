@@ -470,23 +470,20 @@ mixin sleep_message()
 //	PAGE CONTENT
 //
 if state.response_state
-	if state.is_focused
-		+navbar
-		if state.current_page == "calendar_main"
-			+calendar_main()
-			+workday_popup()
-		else if (state.current_page == "edit_groups")
-			+groups_table()
-			+group_popup()
-		else if (state.current_page == "week_template")
-			+week_template_table()
-			+week_template_popup()
-		else if (state.current_page == "statistics")
-			+statistics_component()
-		else if (state.current_page == "transactions")
-			+transactions_component()
-			+transactions_popup()
-	else
-		+sleep_message()
+	+navbar
+	if state.current_page == "calendar_main"
+		+calendar_main()
+		+workday_popup()
+	else if (state.current_page == "edit_groups")
+		+groups_table()
+		+group_popup()
+	else if (state.current_page == "week_template")
+		+week_template_table()
+		+week_template_popup()
+	else if (state.current_page == "statistics")
+		+statistics_component()
+	else if (state.current_page == "transactions")
+		+transactions_component()
+		+transactions_popup()
 else
 	+auth

@@ -29,7 +29,7 @@ module.exports = (utils, state, constants) ->
 	long2date = (long) ->
 		moment(1000 * parseInt(long.toString())).format('YYYY-MM-DD HH:mm:ss')
 	# this shit is one way to refresh events on calendar ...
-	utils.rerender_events_coroutine = (prevstate) ->
+	rerender_events_coroutine_process = (prevstate) ->
 		# rm html elements and create new state ...
 		newstate = jf.reduce(state, {}, (k,v,acc) -> (if (k in ["workday","datepair","calendar","datepairval","new_session","last_click"]) then acc else jf.put_in(acc, [k], jf.clone(v))))
 		newstate.state_calendar_flag = not(state.calendar)
@@ -62,9 +62,18 @@ module.exports = (utils, state, constants) ->
 				$(state.calendar).fullCalendar( 'addEventSource', lst)
 				console.log("re-render "+lst.length.toString()+" events ... new state is")
 				console.log(state)
-			setTimeout((() -> utils.rerender_events_coroutine(newstate)), 500)
+			newstate
 		else
-			setTimeout((() -> utils.rerender_events_coroutine(prevstate)), 500)
+			prevstate
+	utils.rerender_events_coroutine = (this_state) ->
+		try
+			this_state = if state.is_focused then rerender_events_coroutine_process(this_state) else this_state
+			setTimeout((() -> utils.rerender_events_coroutine(this_state)), 500)
+		catch error
+			console.log("RENDER EVENTS ERROR !!! ", error)
+			#
+			# no reloading page here
+			#
 	port = ":7772"
 	#port = if location.port then ":"+location.port else ""
 	bullet = $.bullet((if window.location.protocol == "https:" then "wss://" else "ws://") + location.hostname + port + location.pathname + "bullet")

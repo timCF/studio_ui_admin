@@ -192,7 +192,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			#
 			# need this shit to prevent memory leaks
 			#
-			if (moment().diff(state.last_click, 'seconds') > 600) then window.location.reload(true)
+			if (moment().diff(state.last_click, 'seconds') > 300) then window.location.reload(true)
 			setTimeout(render_coroutine, 500)
 		catch error
 			console.log("RENDER ERROR !!! ", error)

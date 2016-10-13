@@ -133,6 +133,7 @@ module.exports = (utils, state, constants) ->
 				state.dicts.bands = jf.reduce(data.state.bands, {}, (band, acc) -> jf.put_in(acc, [band.id.toString()], band))
 				state.dicts.admins = jf.reduce(data.state.admins, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, [id.toString()], name.toString()))
 				state.dicts.rooms = jf.reduce(data.state.rooms, {}, ({id: id, name: name}, acc) -> jf.put_in(acc, [id.toString()], name.toString()))
+				state.dicts.instruments_intervals = jf.reduce(data.state.instruments, {}, ({id: id}, acc) -> jf.put_in(acc, [id.toString()], utils.instrument_interval_dict(data.state.sessions.filter(({status: status}) -> status == "SS_awaiting_first"), id)))
 				state.rooms_of_locations = jf.reduce(data.state.rooms, {}, ({id: id, location_id: lid}, acc) -> jf.put_in(acc, [id.toString()], lid.toString()))
 				state.ids.admin = state.response_state.admins.filter((el) -> return (el.login == state.request_template.login) && (el.password == state.request_template.password))[0].id
 			when "RS_statistics"

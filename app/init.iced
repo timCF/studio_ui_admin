@@ -229,6 +229,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 	render_tooltips = () ->
 		$('[data-toggle="tooltip"]').tooltip()
 		$('.selectpicker').selectpicker({noneSelectedText: "ничего не выбрано"})
+		$('.selectpicker').selectpicker("refresh")
 		out = $(".tooltip").attr('id')
 		if out and ($("[aria-describedby='"+out+"']").length == 0)
 			$( document.getElementById(out) ).remove()

@@ -145,6 +145,12 @@ module.exports =
 			utils.to_server(msg)
 	date2moment: (date) ->
 		moment(date.getTime())
+	maybe_get_time_from_to: (state) ->
+		utils = @
+		if state.datepairval.date.start and state.datepairval.date.end and state.datepairval.time.start and state.datepairval.time.end
+			utils.get_time_from_to(state)
+		else
+			false
 	get_time_from_to: (state) ->
 		utils = @
 		pd = "YYYY-MM-DD"
@@ -374,3 +380,32 @@ module.exports =
 			msg.cmd = 'CMD_new_transaction'
 			msg.subject.transactions = [subj]
 			utils.to_server(msg)
+	instrument_interval_dict: (sessions, id) ->
+		sessions.filter(({instruments_ids: instruments_ids}) -> instruments_ids.some((this_id) -> this_id.compare(id) == 0))
+	is_between: (subj, from, to) -> (subj > from) and (subj < to)
+	maybe_filter_instruments: (lst, maybe_timeinterval, maybe_session, instruments_intervals) ->
+		utils = @
+		data = if maybe_timeinterval
+			{time_from: time_from, time_to: time_to} = maybe_timeinterval
+			session_pred = if maybe_session then (({id: id}) -> id.compare(maybe_session.id) != 0) else ((_) -> true)
+			lst.filter(({id: instr_id}) ->
+				istr_sesslst = instruments_intervals[instr_id]
+				if istr_sesslst
+					istr_sesslst
+						.filter(session_pred)
+						.every(({time_from: tf, time_to: tt}) ->
+							tfi = tf.toInt() * 1000
+							tti = tt.toInt() * 1000
+							not(
+								((tfi == time_from) and (tti == time_to)) or
+								utils.is_between(tfi, time_from, time_to) or
+								utils.is_between(tti, time_from, time_to) or
+								utils.is_between(time_from, tfi, tti) or
+								utils.is_between(time_to, tfi, tti)
+							))
+				else
+					true)
+		else
+			lst
+		#console.log(data)
+		data

@@ -52,6 +52,7 @@ module.exports = (utils, state, constants) ->
 			state.rnd = Math.random().toString()
 			newstate.rnd = state.rnd
 			if state.calendar
+				scroll = document.getElementsByTagName("body")[0].scrollTop
 				$(state.calendar).fullCalendar( 'removeEventSources' )
 				$(state.calendar).fullCalendar( 'removeEvents' )
 				active_statuses = jf.reduce(state.sessions_statuses, {}, ((s, acc) -> acc[s] = true ; acc))
@@ -63,6 +64,7 @@ module.exports = (utils, state, constants) ->
 				$(state.calendar).fullCalendar( 'addEventSource', lst)
 				console.log("re-render "+lst.length.toString()+" events ... new state is")
 				console.log(state)
+				document.getElementsByTagName("body")[0].scrollTop = scroll
 			newstate
 		else
 			prevstate

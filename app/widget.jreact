@@ -242,7 +242,7 @@ mixin group_popup()
 						div.row.text-center
 							if state.new_band
 								- var band = state.new_band
-								- var headers = state.groups_header.filter(function(el){return (el.key != "balance") && (el.key != "contacts");})
+								- var headers = state.groups_header.filter(function(el){return (el.key != "balance") && (el.key != "contacts") && (el.key != "id");})
 								each k in headers
 									- var this_path = ["new_band", k.key]
 									- var defval = Imuta.access_in(state, this_path)

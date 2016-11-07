@@ -136,6 +136,7 @@ document.addEventListener "DOMContentLoaded", (e) ->
 			{key: "statistics", icon: "fa-line-chart", tt: "статистика", style: "color7"},
 		],
 		groups_header: [
+			{key: "id", transl: "№"},
 			{key: "name", transl: "группа"},
 			{key: "person", transl: "лицо"},
 			{key: "contacts", transl: "контакты"},

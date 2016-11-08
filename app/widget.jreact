@@ -98,7 +98,7 @@ mixin select_instruments_ids(location_id, maybe_session)
 			else
 				option(value=el.id)= el.name
 mixin session_exists()
-	- var fields = ["room_id","instruments_ids","band_id","band_balance","callback","status","price","amount","description"]
+	- var fields = ["room_id","instruments_ids","band_id","band_balance","band_description","callback","status","price","amount","description"]
 	- var this_band = state.response_state.bands.filter(function(el){return el.id.toString() == state.new_session.band_id.toString();})[0]
 	- var bstyle = ((Imuta.is_map(this_band) && (this_band.balance < 0)) ? "alertcolor" : "")
 	each k in fields
@@ -113,6 +113,8 @@ mixin session_exists()
 				span.form-control= (this_band.name+" "+this_band.person+" "+this_band.contacts.phones.join(" "))
 			else if (k == "band_balance")
 				span.form-control(class=bstyle)= (Imuta.is_map(this_band) ? this_band.balance.toString() : this_band)
+			else if (k == "band_description")
+				span.form-control= (Imuta.is_map(this_band) ? this_band.description : this_band)
 			else if (k == "callback")
 				div.btn-default.form-control(onClick=utils.view_swap(state, ["new_session","callback"]))
 					span.myicon(class=(state.new_session.callback ? "fa fa-check" : "fa fa-ban") aria-hidden="true")

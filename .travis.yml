@@ -1,0 +1,15 @@
+os:
+- linux
+language: node_js
+node_js:
+- 'v6.6.0'
+notifications:
+  email: false
+before_script:
+- gem install sass
+- 'npm install -g npm'
+- 'npm install -g bower brunch iced-coffee-script LiveScript node-sass'
+- 'npm rebuild node-sass'
+script:
+- echo "building client ... "
+- make rebuild

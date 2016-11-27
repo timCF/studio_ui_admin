@@ -75,8 +75,8 @@ module.exports = (utils, state, constants) ->
 		catch error
 			console.log("RENDER EVENTS ERROR !!! ", error)
 			setTimeout((() -> utils.rerender_events_coroutine(this_state)), 500)
-	port = ":7772"
-	#port = if location.port then ":"+location.port else ""
+	#port = ":7772"
+	port = if location.port then ":"+location.port else ""
 	bullet = $.bullet((if window.location.protocol == "https:" then "wss://" else "ws://") + location.hostname + port + location.pathname + "bullet")
 	utils.bullet = bullet
 	utils.newmsg = newmsg

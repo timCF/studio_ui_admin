@@ -1,3 +1,4 @@
+dist: trusty
 os:
 - linux
 language: node_js
@@ -5,6 +6,10 @@ node_js:
 - 'v6.6.0'
 notifications:
   email: false
+before_install:
+- sudo dpkg --add-architecture i386
+- sudo apt-get -qq update
+- sudo apt-get install wine1.6
 before_script:
 - gem install sass
 - 'npm install -g npm'

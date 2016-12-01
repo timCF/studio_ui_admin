@@ -13,7 +13,7 @@ desktop:
 	rm -rf ./public/desktop
 	mkdir ./public/desktop_tmp
 	mkdir ./public/desktop
-	pushd ./public/desktop_tmp && electron-packager ../../ studio_ui_admin --platform=all --arch=all --ignore="node_modules|bower_components|\.git" && for i in *; do zip -r $$i $$i; done && popd
+	cd ./public/desktop_tmp && electron-packager ../../ studio_ui_admin --platform=all --arch=all --ignore="node_modules|bower_components|\.git" && for i in *; do zip -r $$i $$i; done && cd ../../
 	cp ./public/desktop_tmp/*.zip ./public/desktop
 	zip -r ./public/studio_ui_admin.zip ./public/desktop
 	./deploy_yandex.sh ./public/studio_ui_admin.zip

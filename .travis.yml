@@ -8,8 +8,9 @@ notifications:
 before_script:
 - gem install sass
 - 'npm install -g npm'
-- 'npm install -g bower brunch iced-coffee-script LiveScript node-sass'
+- 'npm install -g bower brunch iced-coffee-script LiveScript node-sass electron-packager'
 - 'npm rebuild node-sass'
 script:
 - echo "building client ... "
 - make rebuild
+- make desktop

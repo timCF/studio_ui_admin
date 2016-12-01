@@ -1,3 +1,4 @@
+dist: trusty
 os:
 - linux
 language: node_js
@@ -5,11 +6,16 @@ node_js:
 - 'v6.6.0'
 notifications:
   email: false
+before_install:
+- sudo dpkg --add-architecture i386
+- sudo apt-get -qq update
+- sudo apt-get install wine1.6
 before_script:
 - gem install sass
 - 'npm install -g npm'
-- 'npm install -g bower brunch iced-coffee-script LiveScript node-sass'
+- 'npm install -g bower brunch iced-coffee-script LiveScript node-sass electron-packager'
 - 'npm rebuild node-sass'
 script:
 - echo "building client ... "
 - make rebuild
+- make desktop

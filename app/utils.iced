@@ -1,6 +1,7 @@
 proto2base64 = require('base64-arraybuffer')
 jf = require("jsfunky")
 module.exports =
+	tz: "Europe/Moscow"
 	error: (mess) -> toastr.error(mess)
 	warn: (mess, duration) ->
 		if duration

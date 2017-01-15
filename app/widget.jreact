@@ -147,7 +147,7 @@ mixin session_exists()
 								- var this_admin = state.dicts.admins_full[state.new_session[k]]
 								span.form-control= this_admin.name
 							else if (k == "stamp")
-								span.form-control= moment(state.new_session.stamp * 1000).format('YYYY-MM-DD HH:mm:ss')
+								span.form-control= moment(state.new_session.stamp * 1000).tz(utils.tz).format('YYYY-MM-DD HH:mm:ss')
 mixin session_new()
 	- var fields = ["room_id","instruments_ids","band_id","band_balance","band_description","callback","description"]
 	- var this_band = (state.new_session.band_id ? state.dicts.bands_full[state.new_session.band_id] : "не выбрана")

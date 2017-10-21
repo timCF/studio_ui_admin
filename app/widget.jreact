@@ -142,10 +142,10 @@ mixin session_exists()
 								span.form-control= state.new_session.id.toString()
 							else if (k == "admin_id_open")
 								- var this_admin = state.dicts.admins_full[state.new_session[k]]
-								span.form-control= this_admin.name
+								span.form-control= (this_admin ? this_admin.name : "аккаунт выключен")
 							else if (k == "admin_id_close")
 								- var this_admin = state.dicts.admins_full[state.new_session[k]]
-								span.form-control= this_admin.name
+								span.form-control= (this_admin ? this_admin.name : "аккаунт выключен")
 							else if (k == "stamp")
 								span.form-control= moment.utc(state.new_session.stamp * 1000).tz(utils.tz).format('YYYY-MM-DD HH:mm:ss')
 mixin session_new()
